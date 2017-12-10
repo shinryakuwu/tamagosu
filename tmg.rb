@@ -92,11 +92,19 @@ def initialize
    when 11
    @neutral.draw(62, 22, 1) if $lifecounter % 50 < 25
    @neutral1.draw(62, 22, 1) if $lifecounter % 50 >= 25
- when 12
+   when 12
    @happy.draw(62, 22, 1) if $lifecounter % 50 < 25
    @happy1.draw(62, 22, 1) if $lifecounter % 50 >= 25
+   when 13
+   @cozy.draw(62, 22, 1) if $lifecounter % 50 < 25
+   @cozy1.draw(62, 22, 1) if $lifecounter % 50 >= 25
+   when 14
+   @worry.draw(62, 22, 1) if $lifecounter % 50 < 25
+   @worry1.draw(62, 22, 1) if $lifecounter % 50 >= 25
+   when 15
+   @neutral.draw(62, 22, 1)
    end
-  end
+ end
 end
 
 class Rabitto
@@ -164,8 +172,14 @@ def initialize
    when 10
    @blush.draw(53, 10, 1) if $lifecounter % 100 < 50
    @blush.draw(59, 10, 1) if $lifecounter % 100 >= 50
-   when 11
+   when 11, 15
    @neutral1.draw(56, 10, 1)
+   when 12
+   @happy.draw(56, 10, 1)
+   when 13
+   @cozy.draw(56, 10, 1)
+   when 14
+   @sad.draw(56, 10, 1)
    end
   end
 end
@@ -233,6 +247,17 @@ def initialize
    when 11
    @neutral.draw(54, 5, 1) if $lifecounter % 50 < 25
    @neutral1.draw(54, 5, 1) if $lifecounter % 50 >= 25
+   when 12
+   @happy.draw(54, 5, 1) if $lifecounter % 50 < 25
+   @happy1.draw(54, 5, 1) if $lifecounter % 50 >= 25
+   when 13
+   @cozy.draw(54, 5, 1) if $lifecounter % 50 < 25
+   @cozy1.draw(54, 5, 1) if $lifecounter % 50 >= 25
+   when 14
+   @sad.draw(54, 5, 1) if $lifecounter % 50 < 25
+   @sad1.draw(54, 5, 1) if $lifecounter % 50 >= 25
+   when 15
+   @neutral.draw(54, 5, 1)
    end
   end
 end
@@ -319,6 +344,17 @@ def initialize
   when 11
   @neutral.draw(57, 12, 1) if $lifecounter % 50 < 25
   @neutral1.draw(57, 12, 1) if $lifecounter % 50 >= 25
+  when 12
+  @happy.draw(57, 12, 1) if $lifecounter % 50 < 25
+  @happy1.draw(57, 12, 1) if $lifecounter % 50 >= 25
+  when 13
+  @cozy.draw(57, 12, 1) if $lifecounter % 50 < 25
+  @cozy1.draw(57, 12, 1) if $lifecounter % 50 >= 25
+  when 14
+  @angry.draw(57, 12, 1) if $lifecounter % 50 < 25
+  @angry1.draw(57, 12, 1) if $lifecounter % 50 >= 25
+  when 15
+  @neutral.draw(57, 12, 1)
   end
    #@dead.draw(57, 12, 1) if $dead == true
   end
@@ -372,8 +408,12 @@ def initialize
    when 10
    @hugs.draw(62, 12, 1) if $lifecounter % 100 < 50
    @hugs.draw(68, 12, 1) if $lifecounter % 100 >= 50
-   when 11
+   when 11, 15
    @neutral.draw(65, 12, 1)
+   when 12, 13
+   @happy.draw(65, 12, 1)
+   when 14
+   @sad.draw(65, 12, 1)
    end
   end
 end
@@ -432,9 +472,11 @@ def initialize
    when 9
    @sing.draw(68, 23, 1) if $lifecounter % 100 < 50
    @sing1.draw(68, 23, 1) if $lifecounter % 100 >= 50
-   when 11
+   when 11, 12, 13, 14
    @neutral.draw(68, 23, 1) if $lifecounter % 50 < 25
    @neutral1.draw(68, 23, 1) if $lifecounter % 50 >= 25
+   when 15
+   @neutral.draw(68, 23, 1)
    end
   end
 end
@@ -1443,15 +1485,20 @@ end
 
 class Dreams
   def initialize
-   @dreamvar0 = rand(0..12)
-   @dreamvar1 = rand(0..21)
-   @dreamvar2 = rand(0..13)
-   @dreamvar3 = rand(0..17)
-   @dreamvar4 = rand(0..12)
-   @dreamphrases0 = ["in some park", "in a castle", "in the woods", "near the ocean", "on the seashore", "in some city", "in a haunted house", "in a spaceship", "in outer space", "in the fields", "somewhere far away", "on some other planet", "on the moon"]
-   @dreamphrases1 = ["aliens", "mutants", "wizards", "dolphins", "dragons", "sharks", "vampires", "dinosaurs", "some kids", "elfs", "ghosts", "robots", "monsters", "mermaids", "Eskimo", "penguins", "bugs", "zombie cats", "skeletons", "jellyfish", "fairies", "unicorns"]
-   @dreamphrases2 = ["with little umbrellas", "with blasters", "wearing sweaters", "wearing dresses", "wearing funny hats", "wearing mittens", "wearing raincoats", "wearing bucket hats", "looking suspicios", "looking happy", "looking excited", "looking mysterious", "wearing masks", "with chainsaws"]
-   @dreamphrases3 = ["having a party", "casting spells", "singing lullabies", "dancing", "playing drums", "playing chess", "flying around", "growing cactuses", "staring at each other", "whispering", "laughing", "telling jokes", "4-dimensional", "playing hide-and-seek", "talking to me", "teleporting", "playing chiptune", "making paper airplanes"]
+   @dreamvar0 = rand(0..12) if $id != 1
+   @dreamvar0 = rand(13..19) if $id == 1
+   @dreamvar1 = rand(0..21) if $id != 1
+   @dreamvar1 = rand(22..36) if $id == 1
+   @dreamvar2 = rand(0..13) if $id != 1
+   @dreamvar2 = rand(10..19) if $id == 1
+   @dreamvar3 = rand(0..17) if $id != 1
+   @dreamvar3 = rand(10..22) if $id == 1
+   @dreamvar4 = rand(0..12) if $id != 5
+   @dreamvar4 = rand(0..11) if $id == 5
+   @dreamphrases0 = ["in some park", "in a castle", "in the woods", "near the ocean", "on the seashore", "in some city", "in a haunted house", "in a spaceship", "in outer space", "in the fields", "somewhere far away", "on some other planet", "on the moon", "in the garður", "in a vígi", "in the skóginum", "near the haf", "on the sjávarströnd", "in a reimt hús", "in the sviði"]
+   @dreamphrases1 = ["aliens", "mutants", "wizards", "dolphins", "dragons", "sharks", "vampires", "dinosaurs", "some kids", "elfs", "ghosts", "robots", "monsters", "mermaids", "Eskimo", "penguins", "bugs", "zombie cats", "skeletons", "jellyfish", "fairies", "unicorns", "stökkbrigði", "töframaður", "höfrungar", "hákarlar", "risaeðlur", "draugar", "vélmenni", "skrímsli", "hafmeyjunum", "mörgæsir", "skordýr", "beinagrindur", "marglytta", "álfar", "einhyrningar"]
+   @dreamphrases2 = ["with little umbrellas", "with blasters", "wearing sweaters", "wearing dresses", "wearing funny hats", "wearing mittens", "wearing raincoats", "wearing bucket hats", "with chainsaws", "wearing masks", "looking suspicios", "looking happy", "looking excited", "looking mysterious", "with little regnhlífar", "wearing kjólar", "in peysur", "wearing húfur", "with byssur", "with hálsklútar"]
+   @dreamphrases3 = ["having a party", "casting spells", "singing lullabies", "playing drums", "playing chess", "growing cactuses", "playing hide-and-seek", "teleporting", "playing chiptune", "making paper airplanes", "dancing", "flying around", "staring at each other", "whispering", "laughing", "telling jokes", "4-dimensional", "talking to me", "singing lög", "playing trommur", "playing skák", "growing ferskjur", "playing feluleikur"]
    @dreamphrases4 = ["I wanna write it down", "I wanna draw it", "I hope I see it again", "It was nice", "I hope I remember it", "... Nevermind", "Don't laugh, please", "It was weird", "It was strange", "It was touching", "It seems to make no sense", "I often see these", "Just kidding"]
   end
 
@@ -1462,37 +1509,57 @@ class Dreams
    @dreamtext3 = "#{@dreamphrases4[@dreamvar4]}."
    @lines1 = @dreamtext1.wrap.split('line')
    @lines2 = @dreamtext2.wrap.split('line')
-   
+
    if $dreamstate == 1
-    $state = 11
+    $state = 15
     $move = false
-    $wait = $lifecounter + 250
+    $wait = $lifecounter + 50
+    $dreamstate = 2
+   end
+   
+   if $dreamstate == 2 and $lifecounter == $wait
+    $state = 11
+    $wait = $lifecounter + 250 
     $talk = @dreamtext
     $talk1 = @lines1[0]
     $talk2 = @lines1[1]
-    $dreamstate = 2
+    $dreamstate = 3
    end
 
-   if $dreamstate == 2 and $lifecounter == $wait
+   if $dreamstate == 3 and $lifecounter == $wait
     $wait = $lifecounter + 400
     $talk = @lines2[0]
     $talk1 = @lines2[1]
     $talk2 = @lines2[2]
     $talk3 = @lines2[3]
-    $dreamstate = 3
-   end
-
-   if $dreamstate == 3 and $lifecounter == $wait
-   $state = 12
-   $wait = $lifecounter + 200
-   $talk = @dreamtext3
-   $talk1 = nil
-   $talk2 = nil
-   $talk3 = nil
-   $dreamstate = 4
+    $dreamstate = 4
    end
 
    if $dreamstate == 4 and $lifecounter == $wait
+   case @dreamvar4
+   when 0, 1, 2, 3, 4, 9, 11
+   $sad -= 1
+   $state = 13
+   when 12
+   $state = 12
+   $sad -= 1
+   when 5, 6, 7, 8, 10
+   $state = 14
+   end
+   $talk = @dreamtext3
+   if $id == 5 and @dreamvar4 < 2
+    $wait = $lifecounter + 300
+    $talk1 = "I wish I could..."
+   else
+    $wait = $lifecounter + 200
+    $talk1 = nil
+   end
+   $talk2 = nil
+   $talk3 = nil
+   $dreamstate = 5
+   end
+
+   if $dreamstate == 5 and $lifecounter == $wait
    $move = true
    $dreamstate = 0
    $dream = false
@@ -1595,9 +1662,9 @@ class Stats
     elsif $id == 4 and !$light
       $hungry += 1 if $lifecounter % 1000 == 1
     end
-    #$sleepy += 1 if $lifecounter % 4000 == 1
-    $sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
-    if $light and !$sing and !$hug and $sleepstate != 8 and !$dream and !$sleepdeprivation
+    $sleepy += 1 if $lifecounter % 4000 == 1 and $id != 4
+    #$sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
+    if $light and !$sing and !$hug and $sleepstate != 8 and !$dream and !$sleepdeprivation and $move
      if $sleepy > 4
        $state = 4
        elsif $sleepy <= 4
@@ -1633,21 +1700,21 @@ class Stats
     elsif $id == 4 and !$light
       $hungry += 1 if $lifecounter % 500 == 1
     end
-    #$sleepy += 1 if $lifecounter % 3500 == 1
-    $sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
+    $sleepy += 1 if $lifecounter % 3500 == 1 and $id != 4
+    #$sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
     elsif $sick and $asleep
     $state = 5
     $sad += 1 if $lifecounter % 2000 == 1
     $hungry += 1 if $lifecounter % 4500 == 1
-    #$sleepy -= 1 if $lifecounter % 3000 == 299
-    $sleepy -= 1 if $lifecounter % 200 == 1 and $id != 4
+    $sleepy -= 1 if $lifecounter % 3000 == 299 and $id != 4
+    #$sleepy -= 1 if $lifecounter % 200 == 1 and $id != 4
     elsif !$sick and $asleep
     $state = 5
     $sad -= 1 if $lifecounter % 500 == 1 and $id == 4
     $hungry += 1 if $lifecounter % 5000 == 1 and $id != 4
     $hungry -= 1 if $lifecounter % 1500 == 1 and $id == 4
-    #$sleepy -= 1 if $lifecounter % 2000 == 299
-    $sleepy -= 1 if $lifecounter % 200 == 1 and $id != 4
+    $sleepy -= 1 if $lifecounter % 2000 == 299 and $id != 4
+    #$sleepy -= 1 if $lifecounter % 5 == 1 and $id != 4
    end
 
    if $asleep and $sleepy == 0 and $id != 4
