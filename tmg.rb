@@ -20,14 +20,29 @@ class Pet
   $sleepstate = nil
   $id = nil
   $state = 0
-  @image = Gosu::Image.new("vis/tamago.png")
+  @destiny = Gosu::Image.new("vis/destiny.png")
+  @doggomenu, @rabittomenu, @dearmenu, @cattomenu, @robottomenu, @ghostomenu, @doggomenu1, @rabittomenu1, @dearmenu1, @cattomenu1, @robottomenu1 = *Gosu::Image.load_tiles("vis/tamago1.png", 62, 74)
   $respect = 0
   $response = false
-  $dialogue = 10
+  $dialogue = 11
  end
  
- def draw 
-   @image.draw(10, 12, 1)
+ def draw
+  if $cursor > 3 and $cursor < 7
+   @doggomenu.draw(18, 51, 1) if $cursor != 4
+   @doggomenu1.draw(18, 51, 1) if $cursor == 4
+   @rabittomenu.draw(73, 49, 1) if $cursor != 5
+   @rabittomenu1.draw(73, 49, 1) if $cursor == 5
+   @dearmenu.draw(122, 47, 1) if $cursor != 6
+   @dearmenu1.draw(122, 47, 1) if $cursor == 6
+  elsif $cursor > 6 and $cursor < 10
+   @cattomenu.draw(21, 53, 1) if $cursor != 7
+   @cattomenu1.draw(21, 53, 1) if $cursor == 7
+   @robottomenu.draw(81, 49, 1) if $cursor != 8
+   @robottomenu1.draw(81, 49, 1) if $cursor == 8
+   @ghostomenu.draw(137, 64, 1)
+  end
+   @destiny.draw(8, 9, 1)
  end
 
 end
@@ -583,13 +598,12 @@ class Play
 end
 
 class Action
-  attr_reader :cursor1
 
   def initialize
     @image = Gosu::Image.new("vis/cursor.png")
     @image1 = Gosu::Image.new("vis/cursor1.png")
     @image2 = Gosu::Image.new("vis/cursor2.png")
-    @image3 = Gosu::Image.new("vis/cursor3.png")
+    @image3, @image4 = *Gosu::Image.load_tiles("vis/cursor3.png", 8, 14)
     @beep = Gosu::Sample.new("vis/cursor.wav")
     @decide = Gosu::Sample.new("vis/decide.wav")
     @cannot = Gosu::Sample.new("vis/can't.wav")
@@ -604,12 +618,12 @@ class Action
    @image.draw(159, 16, 1) if @cursor == 1
    @image.draw(174, 16, 1) if @cursor == 2
    @image.draw(187, 16, 1) if @cursor == 3
-   @image1.draw(26, 66, 1) if @cursor == 4
-   @image1.draw(88, 66, 1) if @cursor == 5
-   @image1.draw(152, 66, 1) if @cursor == 6
-   @image1.draw(26, 132, 1) if @cursor == 7
-   @image1.draw(88, 132, 1) if @cursor == 8
-   @image1.draw(152, 132, 1) if @cursor == 9
+   @image1.draw(32, 128, 1) if @cursor == 4
+   @image1.draw(85, 128, 1) if @cursor == 5
+   @image1.draw(144, 128, 1) if @cursor == 6
+   @image1.draw(37, 128, 1) if @cursor == 7
+   @image1.draw(95, 128, 1) if @cursor == 8
+   @image1.draw(149, 128, 1) if @cursor == 9
    @image1.draw(20, 73, 1) if @cursor == 10
    @image1.draw(67, 73, 1) if @cursor == 11
    @image1.draw(115, 73, 1) if @cursor == 12
@@ -626,6 +640,8 @@ class Action
    @image3.draw(118, 80, 1) if @cursor == 23
    @image3.draw(98, 96, 1) if @cursor == 24
    @image3.draw(80, 112, 1) if @cursor == 25
+   @image3.draw(4, 83, 1) if $start
+   @image4.draw(188, 83, 1) if $start
    when false
    @image2.draw(144, 16, 1) if @cursor == 0
    @image2.draw(159, 16, 1) if @cursor == 1
@@ -635,6 +651,7 @@ class Action
   end
 
   def update
+    $cursor = @cursor
 
   if Gosu.button_down? Gosu::KB_RIGHT and !@pressed and $move and !$sing
     case @cursor
@@ -1580,7 +1597,14 @@ class Talks
 
  def update
    @var += 1 if $lifecounter % 100 == 1
-   $talk = "Choose your destiny!" if $start
+   if $start
+    $talk = "Dog" if $cursor == 4
+    $talk = "???" if $cursor == 5
+    $talk = "Deer" if $cursor == 6
+    $talk = "Cat" if $cursor == 7
+    $talk = "Robot" if $cursor == 8
+    $talk = "Ghost" if $cursor == 9
+   end
    $talk = "#{@var}" if @var > 0 and !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation
    $talk1 = nil if !$cure and !$feed and !$hug and !$dream and $rpsls == 0 and $light and !$play and !$conversation
    $talk2 = nil if !$feed and !$dream and $rpsls == 0 and $light and !$conversation
@@ -5343,6 +5367,7 @@ class Talks
 
             if $d_number == 4 and $lifecounter == $wait
               $endoftalk = $lifecounter + 200
+              $state = 10
               $talk = "Oh, disregard what I’ve just"
               $talk1 = "said!"
             end
@@ -5374,7 +5399,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $talk = "Hippopotomonstrosesquipaliphobia"
               $talk1 = "stands for the fear of long"
               $talk2 = "words."
@@ -5388,6 +5413,58 @@ class Talks
               $talk2 = nil
             end
           when 11
+            if $d_number == 0
+              $wait = $lifecounter + 250
+              $state = 16
+              $talk = "Have you ever heard of the"
+              $talk1 = "uncanny valley?"
+              $d_number = 1
+            end
+
+            if $d_number == 1 and $lifecounter == $wait
+              $endoftalk = $lifecounter + 250
+              $talk = "You probably have, so I won’t "
+              $talk1 = "bother you telling."
+            end
+          when 12
+            if $d_number == 0
+              $endoftalk = $lifecounter + 450
+              $state = 16
+              $talk = "Statistics show that there's"
+              $talk1 = "no correlation between the"
+              $talk2 = "dolphins’ deaths and global"
+              $talk3 = "warming."
+              $d_number = 1
+            end
+          when 13
+            if $d_number == 0
+              $endoftalk = $lifecounter + 450
+              $state = 16
+              $talk = "I’m just letting you know that "
+              $talk1 = "I will go away soon. "
+              $talk2 = "You’re a nice company, but I"
+              $talk3 = "have  to move on."
+              $d_number = 1
+            end
+          when 14
+            if $d_number == 0
+              $endoftalk = $lifecounter + 400
+              $state = 16
+              $talk = "It would be really nice to"
+              $talk1 = "befriend a cybernetic dog."
+              $talk2 = "A regular dog would do too."
+              $d_number = 1
+            end
+          when 15
+            if $d_number == 0
+              $endoftalk = $lifecounter + 300
+              $state = 16
+              $talk = "Statistics show that all the "
+              $talk1 = "humans who tried junk food"
+              $talk2 = "died."
+              $d_number = 1
+            end
+          when 16
           end
         end
     	end
@@ -5704,7 +5781,7 @@ class Tamago < Gosu::Window
     @font.draw($smash_text, 10, 181, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
     @font.draw($give_a_name, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
     @font.draw($lifecounter, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation
-    #@font.draw($ghost_name, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK)
+    #@font.draw($cursor, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK)
     @font.draw($name_display, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK) if $light
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$light
