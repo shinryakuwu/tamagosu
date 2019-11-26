@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'gosu'
 
+#do͘n̕'̶t ̸y̴ou ̶da̸r̨e to͝ ̡u͝n̕der̢s͢ta̷n͟d͡ w̕h̛a͟t̡'͢ś ̷g̴o͠i̶ng͘ on he͡r͟e, d̨on̷'͢t ̶yo͏u ҉ev͘en ͘da͜r͜e̡
+
 class Pet
   def initialize
   $start = true
@@ -18,14 +20,24 @@ class Pet
   $muchvariable = false
   $rpsls = 0
   $sleepstate = nil
+  $dreamstate = 0
   $id = nil
   $state = 0
   @destiny = Gosu::Image.new("vis/destiny.png")
   @page2, @page1 = *Gosu::Image.load_tiles("vis/2212.png", 32, 12)
   @doggomenu, @rabittomenu, @dearmenu, @cattomenu, @robottomenu, @ghostomenu, @doggomenu1, @rabittomenu1, @dearmenu1, @cattomenu1, @robottomenu1 = *Gosu::Image.load_tiles("vis/tamago1.png", 62, 74)
+  $endoftalk = 0
+  $negative_talk = 0
+  $negative_incrementation = 0
+  $negativetalk_incrementation = 0
+  $maydie = 0
+  $talkrand = $lifecounter + rand(550..1000)
+  #$readytotalk = true (remove the line above)
+  $talkdelay = 0
+  $maybreak = 0
   $respect = 0
   $response = false
-  $dialogue = 2
+  $dialogue = 0
  end
  
  def draw
@@ -69,6 +81,8 @@ def initialize
   $meat = 0
   $milk = 0
   $fears = 0
+  $talkicon_x = 131
+  $talkicon_y = 34
  end
 
  def draw
@@ -150,7 +164,11 @@ def initialize
    when 20
    @cozy.draw(62, 22, 1)
    when 21
-   @worry.draw(62, 22, 1) 
+   @worry.draw(62, 22, 1)
+   when 22
+   @sick.draw(62, 22, 1)
+   when 666
+   @dead.draw(62, 22, 1)
    end
  end
 end
@@ -167,6 +185,8 @@ def initialize
   $meat = 0
   $milk = 1
   $fears = 0
+  $talkicon_x = 131
+  $talkicon_y = 37
  end
 
  def draw
@@ -244,7 +264,8 @@ def initialize
    when 16
    @starving.draw(56, 10, 1)
    when 17
-   @sick.draw(56, 10, 1)
+   @sick.draw(56, 10, 1) if $light
+   @sicknolight.draw(56, 10, 1) if !$light
    when 19
    @hmm.draw(56, 10, 1)
    when 20
@@ -254,13 +275,15 @@ def initialize
    @staring.draw(56, 10, 1)
    when 22
    @love.draw(56, 10, 1)
+   when 666
+   @dead.draw(56, 10, 1)
    end
   end
 end
 
 class Dear
 def initialize
-  @neutral, @neutral1, @happy, @happy1, @sweat, @sweat1, @cozy, @cozy1, @hearts, @hearts1, @cry, @cry1, @cry2, @cry3, @sparkles, @sparkles1, @starving, @sick, @sick1, @sad, @sad1, @sing, @sing1, @sleepy, @sleepy1, @glitchy, @sleep, @sleep1, @sleep2, @sicksleep, @sicksleep1, @sicksleep2, @sicknolight, @sadnolight, @sadnolight1, @fallingasleep = *Gosu::Image.load_tiles("vis/dear.png", 93, 135)
+  @neutral, @neutral1, @happy, @happy1, @sweat, @sweat1, @cozy, @cozy1, @hearts, @hearts1, @cry, @cry1, @cry2, @cry3, @sparkles, @sparkles1, @starving, @sick, @sick1, @sad, @sad1, @sing, @sing1, @sleepy, @sleepy1, @glitchy, @sadglitchy, @sadglitchy1, @sleep, @sleep1, @sleep2, @sicksleep, @sicksleep1, @sicksleep2, @sicknolight, @sadnolight, @sadnolight1, @fallingasleep = *Gosu::Image.load_tiles("vis/dear.png", 93, 135)
   @dead, @dead1 = *Gosu::Image.load_tiles("vis/dear1.png", 126, 111)
   $id = 2
   $candy = 1
@@ -271,6 +294,8 @@ def initialize
   $meat = 0
   $milk = 1
   $fears = 0
+  $talkicon_x = 141
+  $talkicon_y = 44
  end
 
  def draw
@@ -358,10 +383,15 @@ def initialize
    when 23
    @sick.draw(54, 5, 1) if $lifecounter % 50 < 25
    @sick1.draw(54, 5, 1) if $lifecounter % 50 >= 25
-   when 24
+   when 24, 666
    @dead.draw(45, 29, 1)
    when 25
    @dead1.draw(45, 29, 1)
+   when 26
+   @sadglitchy.draw(54, 5, 1) if $lifecounter % 50 < 25
+   @sadglitchy1.draw(54, 5, 1) if $lifecounter % 50 >= 25
+   when 27
+   @sick.draw(54, 5, 1)
    end
   end
 end
@@ -378,6 +408,8 @@ def initialize
   $meat = 1
   $milk = 1
   $fears = 0
+  $talkicon_x = 141
+  $talkicon_y = 45
  end
 
  def draw
@@ -483,9 +515,14 @@ def initialize
   @mad.draw(58, 12, 1) if $lifecounter % 5 >= 2
   when 20
   @fallingasleep.draw(57, 12, 1) if $lifecounter % 50 < 25
-  @fallingasleep1.draw(57, 12, 1) if $lifecounter % 50 >= 25 
+  @fallingasleep1.draw(57, 12, 1) if $lifecounter % 50 >= 25
+  when 21
+  @angry.draw(57, 12, 1)
+  when 22
+  @sick.draw(57, 12, 1)
+  when 666
+  @dead.draw(57, 12, 1)
   end
-   #@dead.draw(57, 12, 1) if $dead == true
   end
 end
 
@@ -493,6 +530,9 @@ class Robotto
 def initialize
   @neutral, @neutral1, @neutral2, @happy, @happy1, @happy2, @sad, @tetris, @tetris1, @tetris2, @tetris3, @tetris4, @lags, @lags1, @dead, @hugs, @sing, @sing1, @wave, @wave1, @lagsnolight, @lagsnolight1, @sadnolight, @sadnolight1 = *Gosu::Image.load_tiles("vis/robotto.png", 69, 126)
   $id = 4
+  $breakrandom = rand(2..3)
+  $talkicon_x = 137
+  $talkicon_y = 42
  end
 
  def draw
@@ -545,6 +585,8 @@ def initialize
    when 16
    @wave.draw(65, 12, 1) if $lifecounter % 50 < 25
    @wave1.draw(65, 12, 1) if $lifecounter % 50 >= 25
+   when 666
+   @dead.draw(65, 12, 1)
    end
   end
 end
@@ -562,6 +604,8 @@ def initialize
   $meat = 0
   $milk = 0
   $fears = 1
+  $talkicon_x = 131
+  $talkicon_y = 41
  end
 
  def draw
@@ -662,8 +706,15 @@ class Action
     @beep = Gosu::Sample.new("vis/cursor.wav")
     @decide = Gosu::Sample.new("vis/decide.wav")
     @cannot = Gosu::Sample.new("vis/can't.wav")
+    @sneeze = Gosu::Sample.new("vis/sneeze.wav")
+    $call = Gosu::Sample.new("vis/call.wav")
     @tune0 = Gosu::Song.new("vis/nintendocore.wav")
     @cursor = 4
+  end
+
+  def tunerand
+    @tune_rand = 1
+    @tune = @tune0 if @tune_rand == 1
   end
   
   def draw
@@ -705,6 +756,18 @@ class Action
    end
   end
 
+  def menuexit
+    case @cursor
+    when 10, 11, 12, 13, 14, 15, 16, 17
+      $feed = false
+      @cursor = 0
+    when 18, 19, 20, 21, 22, 23, 24, 25
+      $rpsls = 0
+      $play = false
+      @cursor = 1
+    end
+  end
+
   def update
     $cursor = @cursor
 
@@ -722,16 +785,22 @@ class Action
     $menucounter = 0
     when 10, 11, 12, 13, 14, 15, 16
     @cursor += 1
+    $autoexit = $lifecounter + 1500
     when 17
     @cursor = 10
+    $autoexit = $lifecounter + 1500
     when 18, 19
     @cursor += 1
+    $autoexit = $lifecounter + 1500
     when 20
     @cursor = 18
+    $autoexit = $lifecounter + 1500
     when 21, 22, 23, 24
     @cursor += 1
+    $autoexit = $lifecounter + 1500
     when 25
     @cursor = 21
+    $autoexit = $lifecounter + 1500
     end
     @beep.play
     @pressed = true
@@ -753,16 +822,22 @@ class Action
     $menucounter = 0
     when 11, 12, 13, 14, 15, 16, 17
     @cursor -= 1
+    $autoexit = $lifecounter + 1500
     when 10
     @cursor = 17
+    $autoexit = $lifecounter + 1500
     when 19, 20
     @cursor -= 1
+    $autoexit = $lifecounter + 1500
     when 18
     @cursor = 20
+    $autoexit = $lifecounter + 1500
     when 22, 23, 24, 25
     @cursor -= 1
+    $autoexit = $lifecounter + 1500
     when 21
     @cursor = 25
+    $autoexit = $lifecounter + 1500
     end
     @beep.play
     @pressed = true
@@ -797,6 +872,12 @@ class Action
   if Gosu.button_down? Gosu::KB_DOWN and !@pressed and @cursor == 0 and !$feed and $move
    if !$light or $asleep or $broken_deer or $sad_deer
     @cannot.play
+    if $robotplay
+      $wait = $lifecounter + 150
+      $talk = "Zingo is busy at the moment."
+      $cantdo = true
+      $move = false
+    end
    elsif $light and !$asleep and $sick
     $cantdo = true
     $wait = $lifecounter + 120
@@ -818,6 +899,7 @@ class Action
       $feed = true
       @cursor = 10
       @decide.play
+      $autoexit = $lifecounter + 1500
     end
    end
    $sleepstate = nil if $light and $id == 3
@@ -827,15 +909,7 @@ class Action
     end
 
   if Gosu.button_down? Gosu::KB_UP and !@pressed and @cursor > 9 and $move
-    case @cursor
-    when 10, 11, 12, 13, 14, 15, 16, 17
-    $feed = false
-    @cursor = 0
-    when 18, 19, 20, 21, 22, 23, 24, 25
-    $rpsls = 0
-    $play = false
-    @cursor = 1
-    end
+    menuexit
     @beep.play
     @pressed = true
   elsif not Gosu.button_down? Gosu::KB_RIGHT and not Gosu.button_down? Gosu::KB_DOWN and not Gosu.button_down? Gosu::KB_LEFT
@@ -844,7 +918,7 @@ class Action
 
   if Gosu.button_down? Gosu::KB_UP and !@pressed and $sing
     $sing = false
-    @tune0.stop
+    @tune.stop
     @beep.play
     @pressed = true
   elsif not Gosu.button_down? Gosu::KB_RIGHT and not Gosu.button_down? Gosu::KB_DOWN and not Gosu.button_down? Gosu::KB_LEFT
@@ -1036,11 +1110,18 @@ class Action
     $talk1 = nil
     $talk2 = nil
     $move = true
+    $autoexit = $lifecounter + 1500
   end
 
  if Gosu.button_down? Gosu::KB_DOWN and !@pressed and @cursor == 2 and $move
    if !$light or $asleep or $broken_deer or $sad_deer
     @cannot.play
+    if $robotplay
+      $wait = $lifecounter + 150
+      $talk = "Zingo is busy at the moment."
+      $cantdo = true
+      $move = false
+    end
    elsif $light and !$asleep
     $cure = true
     $move = false
@@ -1121,6 +1202,7 @@ class Action
   if $light
   $light = false
   $robotplay = false if $id == 4
+  $break_attempt += 1 if $maybreak != 0 and $id == 4
   if $id == 5 and $sleepy == 5
     $wait = $lifecounter + 300
   elsif $id == 4 and !$sick
@@ -1169,8 +1251,8 @@ class Action
     $muchvariable = true
     $move = false
     if $id == 4
-     $talk = "Please don't turn the light"
-     $talk1 = "off. I'm solar-powered."
+     $talk = "Please don't turn the light off."
+     $talk1 = "I'm solar-powered."
      $state = 7
     elsif $id == 3 and $sad < 5 and $sleepy < 5 and $hungry < 5 and !$sleepdeprivation
      $state = 11
@@ -1218,6 +1300,18 @@ class Action
     end
   end
 
+  if $id == 4 and $hungry > 5 and !$light and $move
+    $autolight = true
+    $state = 16 if !$sick
+    $wait = $lifecounter + 150
+    $move = false
+    $light = true
+    $sleepstate = nil
+    $talk = "Sorry, I need to charge." if !$sick
+    $talk = "O ͡wy͟...҉ ͟e ed..rrge̷.͢..҉" if $sick
+    $hungry -= 1 if !$sick
+  end
+
 if $sleepstate == 1 and $lifecounter == $wait and !$light
   $state = 7 if $id == 0 or $id == 2
   $talk = nil
@@ -1262,11 +1356,11 @@ if $sleepstate == 6 and $lifecounter == $wait and !$light
   $sleepstate = 2
 end
 
-if $id == 3 and $light and $sleepy > 4 and !$asleep and !$feed and !$play and !$sing and !$hug and !$dream and !$cure and $move and $sleepstate == nil and $rpsls == 0
+if $id == 3 and $light and $sleepy > 4 and !$asleep and !$feed and !$play and !$sing and !$hug and !$dream and !$cure and $move and $sleepstate == nil and $rpsls == 0 and !$conversation
   $sleepstate = 7
   $catsleep = $lifecounter + 150
 end
-if $id == 4 and $light and $sad > 4 and !$asleep and !$feed and !$play and !$sing and !$hug and !$sick and !$cure and $move and $sleepstate == nil and $rpsls == 0
+if $id == 4 and $light and $sad > 4 and !$asleep and !$feed and !$play and !$sing and !$hug and !$sick and !$cure and $move and $sleepstate == nil and $rpsls == 0 and !$conversation
   $robotplay = true
   $sleepstate = 7
   $catsleep = $lifecounter + 150
@@ -1285,6 +1379,12 @@ end
  if Gosu.button_down? Gosu::KB_DOWN and !@pressed and @cursor == 1 and $move and !$sing
   if !$light or $asleep or $broken_deer or $sad_deer
    @cannot.play
+   if $robotplay
+      $wait = $lifecounter + 150
+      $talk = "Zingo is busy at the moment."
+      $cantdo = true
+      $move = false
+    end
   elsif $light and !$asleep and $sick
    $cantdo = true
    $wait = $lifecounter + 120
@@ -1300,6 +1400,7 @@ end
    $play = true
    @cursor = 18
    @decide.play
+   $autoexit = $lifecounter + 1500
   end
   $sleepstate = nil if $light and $id == 3
   @pressed = true
@@ -1313,7 +1414,8 @@ end
   $sing = true
   @cursor = 1
   $state = 9
-  @tune0.play
+  tunerand
+  @tune.play
   $wait = $lifecounter + 1050
   elsif $id == 3
   $cantdo = true
@@ -1330,7 +1432,7 @@ end
  if $sing == true 
  	if $lifecounter == $wait
   	 $sing = false
-  	 @tune0.stop
+  	 @tune.stop
  	else $sad -= 1 if $lifecounter % 400 == 399
  	end
  end
@@ -1350,6 +1452,7 @@ if Gosu.button_down? Gosu::KB_DOWN and !@pressed and @cursor == 19 and $move
     $sad += 1 if $id == 5
   end
   @decide.play
+  $autoexit = $lifecounter + 1500
   @pressed = true
  elsif not Gosu.button_down? Gosu::KB_RIGHT and not Gosu.button_down? Gosu::KB_DOWN and not Gosu.button_down? Gosu::KB_LEFT
   @pressed = nil
@@ -1484,12 +1587,33 @@ if $rpsls == 6 and $lifecounter == $wait
   @pressed = nil
   end
 
-  if $hug and $lifecounter == $wait
+  if ( $hug or $autolight ) and $lifecounter == $wait
     $move = true
     $talk = nil
     $talk1 = nil
     $hug = false
+    $autolight = false
   end
+
+ if $autoexit == $lifecounter
+  menuexit
+  $talkdelay = $lifecounter + 200
+ end
+
+ if $death_sound
+  @cannot.play
+  $death_sound = false
+ end
+
+ if $sneeze_sound
+  @sneeze.play
+  $sneeze_sound = false
+ end
+
+ if $tunestop
+  @tune.stop
+  $tunestop = false
+ end
 
  if !$eat
   $talk = "Magic candy" if @cursor == 10
@@ -1650,6 +1774,7 @@ class Talks
    $talk3 = nil
    $wait = nil
    @opponent = nil
+   @talkicon, @talkicon1, @talkicon2, @talkicon3 = *Gosu::Image.load_tiles("vis/talk.png", 27, 21)
   end
 
  def draw
@@ -1660,6 +1785,13 @@ class Talks
       @drawing = Gosu::Image.new("vis/giraffe.png")
     end
     @drawing.draw(142, 157, 1)
+   end
+
+   if $talkstate == 1
+    @talkicon.draw($talkicon_x, $talkicon_y, 1) if $lifecounter % 200 < 50
+    @talkicon1.draw($talkicon_x, $talkicon_y, 1) if $lifecounter % 200 >= 50 and $lifecounter % 200 < 100
+    @talkicon2.draw($talkicon_x, $talkicon_y, 1) if $lifecounter % 200 >= 100 and $lifecounter % 200 < 150
+    @talkicon3.draw($talkicon_x, $talkicon_y, 1) if $lifecounter % 200 >= 150
    end
  end
 
@@ -1673,7 +1805,7 @@ class Talks
     $talk = "Robot" if $cursor == 8
     $talk = "Ghost" if $cursor == 9
    end
-   $talk = "#{@var}" if @var > 0 and !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation
+   $talk = "#{@var}" if @var > 0 and !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation and !$autolight
    $talk1 = nil if !$cure and !$feed and !$hug and !$dream and $rpsls == 0 and $light and !$play and !$conversation
    $talk2 = nil if !$feed and !$dream and $rpsls == 0 and $light and !$conversation
    $talk3 = nil if !$dream and $rpsls == 0 and !$conversation
@@ -1682,9 +1814,9 @@ class Talks
    $talk1 = "You choose #{$choice[$choicevar]}." if $rpsls == 2
    case $id
    when 0
-   @opponent = "Doggo"
+   @opponent = "Dogrose"
    when 1
-   @opponent = "Waifu"
+   @opponent = "Stranger"
    when 3
    @opponent = "Ninja"
    when 4
@@ -1697,8 +1829,26 @@ class Talks
      $talk3 = "#{@opponent} wins!" if $game == 2
     end
 
-   if Gosu.button_down? Gosu::KB_T and !@pressed2 and $move and !$play and $rpsls == 0 and !$feed
+   $readytotalk = true if $talkrand == $lifecounter
+
+   if (Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT) and !@pressed4 and !$conversation
+    $talkdelay = $lifecounter + 200
+    @pressed4 = true
+   elsif not Gosu.button_down? Gosu::KB_UP and not Gosu.button_down? Gosu::KB_DOWN and not Gosu.button_down? Gosu::KB_LEFT and not Gosu.button_down? Gosu::KB_RIGHT
+    @pressed4 = nil
+   end
+
+   if $wait == $lifecounter
+   	$talkdelay = $lifecounter + 200
+   end
+
+   if (Gosu.button_down? Gosu::KB_T or $readytotalk) and !@pressed2 and $talkdelay <= $lifecounter and $move and !$play and !$sing and $rpsls == 0 and !$feed and !$dead and !$start and not ($id == 3 and $light and $sleepy > 4) and !$dream and !$asleep and not ($id == 4 and $sad > 4 and $light) and not ($id != 3 and !$light and $sleepy > 4) and !$conversation and $maybreak == 0 and !$sleepdeprivation and $sleepstate != 4 and !$sneeze
+     $call.play unless ($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2
+     $readytotalk = false
+     $light = true
+     $sleepstate = nil
      $conversation = true
+     $talkstate = 0
      $d_number = 0
      @pressed2 = true
    elsif not Gosu.button_down? Gosu::KB_T
@@ -1706,53 +1856,228 @@ class Talks
    end
 
    if $conversation == true
+    $move = false
+    if $talkstate == 0
+      if $dialogue == 0 or $broken_deer or ($id == 0 and $dialogue == 20) or ($id == 1 and $dialogue == 23) or ($id == 3 and $dialogue == 19) or ($id == 4 and $dialogue == 17) or ($id == 5 and $dialogue == 18) or $negativetalk_incrementation > 5 or $negative_incrementation > 5
+        $talkstate = 2
+      else
+        $waittotalk = $lifecounter + 3000
+        $talkstate = 1
+      end
+    end
+   end
+
+   if $talkstate == 1
+    if $id == 5
+      $state = 15
+    elsif $id == 4
+      if $sick
+        $state = 6
+        $negative_talk = 1
+      else $state = 15
+      end
+    elsif $sad_deer
+      $state = 2
+    elsif $sick
+      $negative_talk = 1
+      $state = 22 if $id == 0 or $id == 3
+      $state = 27 if $id == 2
+      $state = 17 if $id == 1
+    elsif $sleepy > 4 or $sad > 4 or $hungry > 4
+      if $sleepy > 4
+        $state = 21 if $id != 1
+        $state = 14 if $id == 1
+        $negative_talk = 2
+      elsif $sad > 4
+        $state = 2
+        $negative_talk = 3
+      elsif $hungry > 4
+        $state = 21 if $id != 1
+        $state = 14 if $id == 1
+        $negative_talk = 4
+      end
+    elsif $id == 2 and ($dialogue == 17 or $dialogue == 18 or $dialogue == 19)
+      $state = 21
+    else $state = 15
+    end
+   end
+
+   if $waittotalk == $lifecounter and $talkstate == 1
+    $conversation = false
+    $talkstate = 0
+    $move = true
+    $negative_talk = 0
+    $negative_incrementation += 1 if $id != 4 and $id != 5
+    $talkrand = $lifecounter + rand(550..1000)
+   end
+
+   if $talkstate == 1 and (Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT)
+    $negative_incrementation -= 1 unless $negative_incrementation < 1
+    $talkstate = 2
+   end
+
+   if $talkstate == 2
     conversation
    end
 
-   if $lifecounter == $endoftalk
+   if $lifecounter == $endoftalk and $conversation
+    $endoftalk = 0
+    $wait = 0
+    $talkstate = 0
     $d_number = 0
-    $dialogue += 1 if !$negative_talk
-    $move = true
-    $negative_talk = false
+    $dialogue += 1 if $negative_talk == 0
     $conversation = false
+    $move = true
+    $negative_talk = 0
+    $talkrand = $lifecounter + rand(550..1000)
    end
 
-    def conversation
-    	$move = false
-      $light = true
-      $sleepstate = nil
-      if $d_number == 0 and $state > 1 and $state < 7 and !$sad_deer and $id != 5
-      	if $state == 3
+   if $dead
+    case $id
+    when 0
+      $talk = "You're an irresponsible creature"
+      $talk1 = "And nobody  loves you."
+      $talk2 = "Press ESC to cry."
+    when 1
+      $talk = "Stjörnuryk ceased to  exist."
+      $talk1 = "There's nothing  you can do"
+      $talk2 = "about it. "
+      $talk3 = "But you can press ESC."
+    when 2
+      $talk = "Game over"
+      $talk1 = "Press ESC to quit"
+    when 3
+      $talk = "Oops, I died... "
+      $talk1 = "Press ESC to escape."
+    when 4
+      $talk = "You are a real monster."
+      $talk1 = "Press ESC to live with it."
+    end
+    if Gosu.button_down? Gosu::KB_ESCAPE
+        $exit = true
+    end
+   end
+
+   if $ending
+    $wait = 0
+    case $id
+    when 0, 1, 3
+      if $d_number == 0
+        $lettername = "Dogrose" if $id == 0
+        $lettername = "Stranger" if $id == 1
+        $lettername = "Ninja" if $id == 3
+        $talk = "#{$lettername} left a letter for you."
+        $talk1 = "Press ↓ to open it."
+      end
+
+      if $d_number == 0 and Gosu.button_down? Gosu::KB_DOWN
+        $opened_letter = true
+        $d_number = 1
+        if $id == 0
+          if !$response or $respect < 0
+            $talk = '"Goodbye..."'
+            $talk1 = "Press ESC and go do heroic"
+            $talk2 = "stuff."
+          elsif $respect == 0
+            $talk = '"Thank you for your  time.'
+            $talk1 = "It was nice  to meet you."
+            $talk2 = 'Sadly, I have to go."'
+            $talk3 = "Press ESC to leave."
+          elsif $respect > 0
+            $talk = '"Thank you for existing! '
+            $talk1 = "I hope we will meet again"
+            $talk2 = 'someday."'
+            $talk3 = "Press ESC to go to reality."
+          end
+        elsif $id == 1
+          if !$response or $respect < 0
+            $talk = '"Bless farðu að gæta þín。"'
+          else
+            $talk = '"Vona að sjá þig aftur。"' 
+          end
+          $talk1 = nil
+          $talk2 = "Press ESC?"
+        elsif $id == 3
+          if !$response or $respect < 0
+            $talk = %("I need to tell you something... )
+            $talk1 = %(I'M NOT TALKING TO YOU!!!")
+          elsif $respect == 0 or $respect == 1
+            $talk = %("I have my own warrior's  way)
+            $talk1 = %(to follow. Bye!")
+          elsif $respect > 1
+            $talk = %("Good luck,  cool kid!)
+            $talk1 = %(You're so  much fun!")
+          end
+          $talk2 = "Press ESC and go pet a real cat."
+        end
+      end
+    when 4
+      $talk = "Goodbye, organism!  Take care!"
+      $talk1 = "Press ESC if it’s impossible"
+      $talk2 = "to  manipulate you."
+    when 5
+      $talk = "The ghost disappeared into"
+      $talk1 = "thin air."
+      $talk2 = "Press ESC to go back to reality."
+    end
+
+    if Gosu.button_down? Gosu::KB_ESCAPE
+        $exit = true
+    end
+   end
+
+   if Gosu.button_down? Gosu::KB_UP and ( $conversation or ( $dreamstate > 2 and $dreamstate < 6 )) and !$ending and !$dead and not ($id == 3 and $dialogue == 6 and ($d_number == 8 or $d_number == 9))
+    $wait += 1 unless $wait == nil
+    $endoftalk += 1 unless $endoftalk == 0
+   end
+  end
+
+  def negativetalk_decrementation
+    $negativetalk_incrementation -= 1 unless $negativetalk_incrementation < 1
+  end
+
+  def conversation
+      if $d_number == 0 and ($negativetalk_incrementation > 5 or $negative_incrementation > 5)
+        $response = false
+        $ending = true if $id != 2
+        $dead_deer = true if $id == 2 and !$dead
+      elsif $d_number == 0 and $negative_talk > 0 and !$ending
+        $negativetalk_incrementation += 1 if $id != 4
+      	if $negative_talk == 4
       		$endoftalk = $lifecounter + 300
           $state = 16 if $id == 0 or $id == 1
           $state = 14 if $id == 2 or $id == 3
       		$talk = "I'm starving..."
       		$talk1 = "Please give me something"
           $talk2 = "to eat."
-      	elsif $state == 4
-      		$endoftalk = $lifecounter + 300
+      	elsif $negative_talk == 3
+  			  $endoftalk = $lifecounter + 300
+          $state = 2
+      		$talk = "*sob* *sob*"
+        elsif $negative_talk == 2
+          $endoftalk = $lifecounter + 300
           $state = 14 if $id == 0 or $id == 1 or $id == 2
           $state = 16 if $id == 3
-      		$talk = "I'm tired..."
-      	elsif $state == 2
-  			  $endoftalk = $lifecounter + 300
-      		$talk = "*sob* *sob*"
-        elsif $state == 6
+          $talk = "I'm tired..."
+        elsif $negative_talk == 1
           $endoftalk = $lifecounter + 300
           $state = 17 if $id == 0 or $id == 1 or $id == 3
           $state = 23 if $id == 2
-          $talk = "I feel bad..." if $id != 4
+          $talk = "I feel bad..." if $id != 4 and $id != 1
+          if $id == 1
+          $talk = "Don't get close to me, I'm"
+          $talk1 = "infected."
+          end
           $talk = "Pzzz..ee͢..o͜o̸t...͏̵̛" if $id == 4
         end
        $d_number = 1
-       $negative_talk = true
-    	else
+    	elsif !$ending and $negative_talk == 0
     		case $id
     		when 0
     			case $dialogue
     			when 0
             if $d_number == 0
-      				$wait = $lifecounter + 350
+      				$wait = $lifecounter + 400
               $state = 11
       				$talk = "Hello! My name is Dogrose."
       				$talk1 = "But I’m sure I’m a dog if you"
@@ -1761,7 +2086,7 @@ class Talks
             end
 
     				if $d_number == 1 and $lifecounter == $wait
-    					$wait = $lifecounter + 300
+    					$wait = $lifecounter + 350
               $state = 11
 	    				$talk = "You don’t have to be always"
 	    				$talk1 = "near. I bet you are very busy."
@@ -1770,7 +2095,7 @@ class Talks
 	    			end
 
 	    			if $d_number == 2 and $lifecounter == $wait
-    					$endoftalk = $lifecounter + 300
+    					$endoftalk = $lifecounter + 400
               $state = 13
 	    				$talk = "Please just do your thing."
 	    				$talk1 = "I will say if I really need"
@@ -1778,7 +2103,7 @@ class Talks
 	    			end
 	    		when 1
             if $d_number == 0
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 550
               $state = 18
               $talk = "By the way… I didn’t mean I"
               $talk1 = "don’t want you to be near…"
@@ -1788,7 +2113,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 450
               $state = 12
               $talk = "Anyways, thank you for your"
               $talk1 = "company. I really appreciate"
@@ -1797,7 +2122,7 @@ class Talks
             end
           when 2
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 350
               $state = 13
               $talk = "One day a plant grew on"
               $talk1 = "my head."
@@ -1805,7 +2130,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 18
               $talk = "Why? I don’t know."
               $talk1 = "No, it’s not a disease."
@@ -1814,7 +2139,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 18
               $talk = "I hadn’t got a name before it"
               $talk1 = "appeared. Everyone just called"
@@ -1823,7 +2148,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 350
               $state = 11
               $talk = "Every dog gets a name according"
               $talk1 = "to their qualities."
@@ -1832,7 +2157,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 350
               $state = 13
               $talk = "I don’t mind being a plant."
               $talk1 = "I like plants."
@@ -1841,7 +2166,7 @@ class Talks
             end
           when 3
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 350
               $state = 12
               $talk = "By the way, thank you so much"
               $talk1 = "for being a listener."
@@ -1849,7 +2174,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 350
               $state = 14
               $talk = "I really wish I could hear"
               $talk1 = "you too…"
@@ -1857,7 +2182,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 500
+              $endoftalk = $lifecounter + 600
               $state = 14
               $talk = "If I ever asked you to be my"
               $talk1 = "friend, would you say ‘yes’…"
@@ -1867,7 +2192,7 @@ class Talks
             end
           when 4
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 12
               $talk = "Wait, I have an idea!"
               $talk1 = "You can actually talk by"
@@ -1876,7 +2201,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 11
               $talk = "What do you think?"
               $talk1 = "I could ask you something,"
@@ -1886,7 +2211,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 14
               $talk = "I understand that it's far from"
               $talk1 = "real talks. But still it would"
@@ -1921,13 +2246,14 @@ class Talks
                 $talk3 = nil
                 $respect += 1
                 $sad -= 1
+                negativetalk_decrementation
                 $response = true
                 $d_number = 6
               end
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 14
               $talk = "Well, it's ok, you don't have"
               $talk1 = "to answer..."
@@ -1938,7 +2264,7 @@ class Talks
             end
           when 5
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 350
               $state = 13
               $talk = "There's one more thing I wanted"
               $talk1 = "to ask you much. Do you like"
@@ -1954,14 +2280,16 @@ class Talks
 
             if $d_number == 1 or $d_number == 2
               if Gosu.button_down? Gosu::KB_Y
-                $wait = $lifecounter + 200
+                $wait = $lifecounter + 250
                 $state = 12
                 $talk = "Really? I'm so glad!"
                 $talk1 = nil
                 $talk2 = nil
                 $respect += 1
                 $sad -= 1
+                negativetalk_decrementation
                 $response = true
+                $fairytales = true
                 $d_number = 3
               end
               if Gosu.button_down? Gosu::KB_N
@@ -1973,6 +2301,7 @@ class Talks
                 $respect -= 1
                 $sad += 1
                 $response = true
+                $fairytales = false
                 $d_number = 3
               end
             end
@@ -1983,11 +2312,12 @@ class Talks
               $talk = "..."
               $talk1 = nil
               $talk2 = nil
+              $fairytales = true
               $d_number = 3
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 13
               $talk = "I actually love fairytales with"
               $talk1 = "all my heart. I read a lot"
@@ -1996,15 +2326,16 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 350
               $state = 12
               $talk = "Wait, I am a kid..."
               $talk1 = "And I love fairytales."
               $talk2 = nil
             end
-          when 6
+          when 6 
+           if $fairytales
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 12
               $talk = "I just thought..."
               $talk1 = "I should tell you a fairytale!"
@@ -2013,7 +2344,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 350
               $state = 13
               $talk = "'Once upon a time there lived"
               $talk1 = "an old owl...'"
@@ -2031,15 +2362,32 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "Wait, I've changed my mind!"
               $talk1 = "It's actually not that good."
               $talk2 = "Nevermind..."
             end
+           elsif !$fairytales
+            if $d_number == 0
+              $wait = $lifecounter + 400
+              $state = 13
+              $talk = "I don't wanna boast, but I know"
+              $talk1 = "a lot of nice fairytales."
+              $d_number = 1
+            end
+
+            if $d_number == 1 and $lifecounter == $wait
+              $endoftalk = $lifecounter + 550
+              $talk = "So if you change your mind"
+              $talk1 = "someday, please let me know."
+              $talk2 = "I would gladly share some"
+              $talk3 = "with you..."
+            end
+           end
           when 7
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "By the way, fairytales taught"
               $talk1 = "me lots of valuable things."
@@ -2047,7 +2395,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "To smile to scary creatures."
               $talk1 = "Or to never be greedy."
@@ -2055,14 +2403,14 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 11
               $talk = "Or that it's a bad idea to grow"
               $talk1 = "magic beans at home."
             end
           when 8
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "I have a big secret to share."
               $talk1 = "Please don't tell anyone."
@@ -2070,7 +2418,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "I believe in monsters! One of"
               $talk1 = "them surely lives under my bed!"
@@ -2078,7 +2426,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "I've heard them mumbling..."
               $talk1 = "and scratching... and..."
@@ -2094,7 +2442,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 250
               $state = 14
               $talk = "I really hope you do..."
               $talk1 = nil
@@ -2112,11 +2460,12 @@ class Talks
                 $talk3 = nil
                 $respect += 1
                 $sad -= 1
+                negativetalk_decrementation
                 $response = true
                 $d_number = 5
               end
               if Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 200
+                $endoftalk = $lifecounter + 250
                 $state = 14
                 $talk = "Oh no, not you too..."
                 $talk1 = nil
@@ -2130,7 +2479,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 450
               $state = 13
               $talk = "I'm not sure if they are, "
               $talk1 = "but if I ever see them, "
@@ -2138,7 +2487,7 @@ class Talks
             end
           when 9
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 14
               $talk = "I worry much lest I  trouble you."
               $talk1 = "Having a pet  is such a big"
@@ -2164,7 +2513,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 14
               $talk = "He started yelling and  I didn't"
               $talk1 = "know what to do.  I hope it"
@@ -2173,7 +2522,7 @@ class Talks
             end
           when 10
             if $d_number == 0
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 18
               $talk = "Don't worry, I'm not  the shouting"
               $talk1 = "kind.  I'm more like... a flower. "
@@ -2182,7 +2531,7 @@ class Talks
             end
           when 11
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "By the way, one day  I've seen a"
               $talk1 = "glowing  flower! You may think"
@@ -2191,7 +2540,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 350
               $state = 11
               $talk = "A bunch of fireflies were "
               $talk1 = "sitting on it."
@@ -2199,7 +2548,7 @@ class Talks
             end
           when 12
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "One day I met a wise  and huge"
               $talk1 = "and old  fluffy doggo."
@@ -2207,7 +2556,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "“There is no lava  on the floor."
               $talk1 = "You can  stand wherever you "
@@ -2216,7 +2565,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 250
               $state = 14
               $talk = "He made my life very  dull..."
               $talk1 = nil
@@ -2225,7 +2574,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "As you can guess, he  doesn't"
               $talk1 = "believe neither in  monsters"
@@ -2243,7 +2592,7 @@ class Talks
             end
           when 13
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 18
               $talk = "Strangely, adults are  the"
               $talk1 = "ones who taught me  reading"
@@ -2252,7 +2601,7 @@ class Talks
             end
             
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "Not long ago I was  just looking"
               $talk1 = "at the  pictures imagining my "
@@ -2261,7 +2610,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 18
               $talk = "But then I was taught  that"
               $talk1 = "letters in fact mean  something."
@@ -2269,7 +2618,7 @@ class Talks
             end
           when 14
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "I once read a book  which ended"
               $talk1 = "with kids  eating some magic"
@@ -2278,7 +2627,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "I wonder where to find  these"
               $talk1 = "pills."
@@ -2287,7 +2636,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "I would give all my  money and"
               $talk1 = "stickers in  exchange for these!"
@@ -2295,7 +2644,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 11
               $talk = "I have 38 cents and  two awesome"
               $talk1 = "stickers  with cars. They are"
@@ -2304,7 +2653,7 @@ class Talks
           when 15
             if $respect >= 0 and $response
               if $d_number == 0
-                $wait = $lifecounter + 300
+                $wait = $lifecounter + 400
                 $state = 14
                 $talk = "I'm sorry... I told you  before"
                 $talk1 = "that I'm not  a good talker."
@@ -2312,7 +2661,7 @@ class Talks
               end
 
               if $d_number == 1 and $lifecounter == $wait
-                $wait = $lifecounter + 200
+                $wait = $lifecounter + 300
                 $state = 14
                 $talk = "But I end up talking  pretty"
                 $talk1 = "much..."
@@ -2320,14 +2669,14 @@ class Talks
               end
 
               if $d_number == 2 and $lifecounter == $wait
-                $endoftalk = $lifecounter + 300
+                $endoftalk = $lifecounter + 400
                 $state = 13
                 $talk = "Thank you so much  for being"
                 $talk1 = "so kind to me!"
               end
             elsif $respect < 0
               if $d_number == 0
-                $endoftalk = $lifecounter + 400
+                $endoftalk = $lifecounter + 500
                 $state = 18
                 $talk = "Seems like we are so  different."
                 $talk1 = "It's not bad!  All the beings are"
@@ -2336,7 +2685,7 @@ class Talks
               end
             elsif !$response
               if $d_number == 0
-                $wait = $lifecounter + 350
+                $wait = $lifecounter + 450
                 $state = 14
                 $talk = "You never ever answered... "
                 $talk1 = "It's nothing, maybe your "
@@ -2345,7 +2694,7 @@ class Talks
               end
 
               if $d_number == 1 and $lifecounter == $wait
-                $wait = $lifecounter + 300
+                $wait = $lifecounter + 400
                 $state = 14
                 $talk = "I just wanted to thank  you for"
                 $talk1 = "taking care of  me... "
@@ -2354,7 +2703,7 @@ class Talks
               end
 
               if $d_number == 2 and $lifecounter == $wait
-                $endoftalk = $lifecounter + 300
+                $endoftalk = $lifecounter + 400
                 $state = 14
                 $talk = "If you weren't around , I would"
                 $talk1 = "probably... die  bitter and alone..."
@@ -2364,7 +2713,7 @@ class Talks
             end
           when 16
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "Yesterday I've lost a  tooth."
               $talk1 = "So I cried a lot..."
@@ -2372,7 +2721,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 14
               $talk = "I didn't know it was  alright"
               $talk1 = "for teeth to tear  off."
@@ -2408,7 +2757,7 @@ class Talks
               end
 
               if Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 350
+                $endoftalk = $lifecounter + 450
                 $state = 14
                 $talk = "Yes, sounds impossible..."
                 $talk1 = "I accidentally step on bugs"
@@ -2429,7 +2778,7 @@ class Talks
             end
           when 18
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "I have to tell you something."
               $talk1 = "I hope you  hear me, it's"
@@ -2438,7 +2787,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 14
               $talk = "I will leave you soon.  It's not"
               $talk1 = "that I want to...  It's just..."
@@ -2446,7 +2795,7 @@ class Talks
             end
           when 19
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 11
               $talk = "There is one more  thing wise"
               $talk1 = "huge old fluffy doggo said"
@@ -2455,7 +2804,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "“Never fear. Never worry. "
               $talk1 = "It's the best you can do.”"
@@ -2464,17 +2813,19 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 18
               $talk = "It sounds like  a wise advice."
               $talk1 = "But easier  said than done!"
             end
+          when 20
+            $ending = true
 	    		end
     		when 3
           case $dialogue
           when 0
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "Greetings! I'm Ninja! "
               $talk1 = "I will be here for a  while,"
@@ -2483,7 +2834,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 10
               $talk = "No need to look  after me,"
               $talk1 = "really! Just  give me foods plz."
@@ -2492,7 +2843,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "I will call you in  case of"
               $talk1 = "something  urrrgent, alrrright?"
@@ -2500,14 +2851,14 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 200
               $state = 11
               $talk = "Do your stuff."
               $talk1 = nil
             end
           when 1
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 10
               $talk = "Just letting you know... "
               $talk1 = "I really like fish! "
@@ -2516,7 +2867,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 350
               $state = 10
               $talk = "I'm not driving at  anything,"
               $talk1 = "please give me some fish!!!"
@@ -2524,7 +2875,7 @@ class Talks
             end
           when 2
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "Thanks for your  company!"
               $talk1 = "You know,  would be cool to "
@@ -2533,7 +2884,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 350
               $state = 12
               $talk = "Oh, I know! You  could press"
               $talk1 = "buttons!  How about that?"
@@ -2544,7 +2895,7 @@ class Talks
             if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 200
               $state = 10
-              $talk = "C'moooon, press something!"
+              $talk = "C'moooon, press any button!"
               $talk1 = nil
               $d_number = 3
             end
@@ -2560,20 +2911,36 @@ class Talks
                 Gosu.button_down? Gosu::KB_G or Gosu.button_down? Gosu::KB_H or Gosu.button_down? Gosu::KB_I or Gosu.button_down? Gosu::KB_J or Gosu.button_down? Gosu::KB_K or Gosu.button_down? Gosu::KB_L or 
                 Gosu.button_down? Gosu::KB_M or Gosu.button_down? Gosu::KB_N or Gosu.button_down? Gosu::KB_O or Gosu.button_down? Gosu::KB_P or Gosu.button_down? Gosu::KB_Q or Gosu.button_down? Gosu::KB_R or 
                 Gosu.button_down? Gosu::KB_S or Gosu.button_down? Gosu::KB_T or Gosu.button_down? Gosu::KB_U or Gosu.button_down? Gosu::KB_V or Gosu.button_down? Gosu::KB_W or Gosu.button_down? Gosu::KB_X or 
-                Gosu.button_down? Gosu::KB_Y or Gosu.button_down? Gosu::KB_Z
+                Gosu.button_down? Gosu::KB_Y or Gosu.button_down? Gosu::KB_Z or Gosu.button_down? Gosu::KB_0 or Gosu.button_down? Gosu::KB_1 or Gosu.button_down? Gosu::KB_2 or Gosu.button_down? Gosu::KB_3 or 
+                Gosu.button_down? Gosu::KB_4 or Gosu.button_down? Gosu::KB_5 or Gosu.button_down? Gosu::KB_6 or Gosu.button_down? Gosu::KB_7 or Gosu.button_down? Gosu::KB_8 or Gosu.button_down? Gosu::KB_9 or
+                Gosu.button_down? Gosu::KB_APOSTROPHE or Gosu.button_down? Gosu::KB_BACKSLASH or Gosu.button_down? Gosu::KB_BACKSPACE or Gosu.button_down? Gosu::KB_BACKTICK or Gosu.button_down? Gosu::KB_COMMA or
+                Gosu.button_down? Gosu::KB_DELETE or Gosu.button_down? Gosu::KB_END or Gosu.button_down? Gosu::KB_ENTER or Gosu.button_down? Gosu::KB_EQUALS or Gosu.button_down? Gosu::KB_HOME or 
+                Gosu.button_down? Gosu::KB_LEFT_SHIFT or Gosu.button_down? Gosu::KB_MINUS or Gosu.button_down? Gosu::KB_RIGHT_SHIFT or Gosu.button_down? Gosu::KB_SLASH or Gosu.button_down? Gosu::KB_SPACE or 
+                Gosu.button_down? Gosu::KB_TAB or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_UP
                 $wait = $lifecounter + 200
                 $state = 12
                 $talk = "Cooooooool!"
                 $talk1 = "You really did it!"
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
+                $response = true
+                $d_number = 6
+              end
+              if Gosu.button_down? Gosu::KB_ESCAPE
+                $wait = $lifecounter + 300
+                $state = 12
+                $talk = "You pressed ESC as 'any button',"
+                $talk1 = "lol."
+                $sad -= 1
+                $respect += 2
                 $response = true
                 $d_number = 6
               end
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "Well... Now I wonder  how exactly"
               $talk1 = "we could communicate this way."
@@ -2581,7 +2948,7 @@ class Talks
             end
 
             if $d_number == 7 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "People are so hard  to"
               $talk1 = "communicate with!"
@@ -2589,7 +2956,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 14
               $talk = "Maaaan... That's not  cool what"
               $talk1 = "you're  doing... What you are "
@@ -2599,7 +2966,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "Alright, I will ask  you things. "
               $talk1 = "Maybe you  will change your mind."
@@ -2607,7 +2974,7 @@ class Talks
             end
           when 3
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 550
               $state = 11
               $talk = "Errr, how about pressing Y for"
               $talk1 = "'YES' and N for  'dunno maybe'?"
@@ -2632,18 +2999,19 @@ class Talks
 
             if $d_number == 2 or $d_number == 3
               if Gosu.button_down? Gosu::KB_Y
-                $endoftalk = $lifecounter + 350
+                $endoftalk = $lifecounter + 400
                 $state = 12
                 $talk = "Yo killa! Don't worry,  I'll keep"
                 $talk1 = "it secret!  You get my cat"
                 $talk2 = "promise!"
                 $respect += 1
                 $response = true
+                negativetalk_decrementation
                 $d_number = 5
               end
 
               if Gosu.button_down? Gosu::KB_N
-                $wait = $lifecounter + 300
+                $wait = $lifecounter + 400
                 $state = 11
                 $talk = "Mmm... Oh, what  if you have a"
                 $talk1 = "split  purrrsonality?"
@@ -2654,7 +3022,7 @@ class Talks
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 450
               $state = 13
               $talk = "One person is a  serial killer"
               $talk1 = "and another  is, well, talking"
@@ -2663,7 +3031,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 13
               $talk = "Alriiight, it's fair.  If you were,"
               $talk1 = "you  wouldn't tell anyway."
@@ -2671,7 +3039,7 @@ class Talks
             end
           when 4
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 12
               $talk = "Oh, don't think  that I'm"
               $talk1 = "interested in  death..."
@@ -2679,7 +3047,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "I just like poking  corpses with"
               $talk1 = "a stick."
@@ -2701,7 +3069,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 13
               $talk = "Last week I poked  a dead pigeon."
               $talk1 = "It was  fun. And also a snail. "
@@ -2710,7 +3078,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 10
               $talk = "What I desire the  most is to"
               $talk1 = "poke a  real shark someday!"
@@ -2719,7 +3087,7 @@ class Talks
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 10
               $talk = "Sharks are sooooo  dope!"
               $talk1 = "Did you know  that they swim"
@@ -2738,7 +3106,7 @@ class Talks
             end
           when 5
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "By the way, I have  superpowers!"
               $talk1 = "Night vision! And also 9 lives!"
@@ -2747,7 +3115,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "I must be a tripple-super-hero..."
               $talk1 = nil
@@ -2795,7 +3163,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 50
+              $wait = $lifecounter + 65
               $state = 10
               $talk = "...1..."
               $talk1 = nil
@@ -2804,14 +3172,14 @@ class Talks
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $wait = $lifecounter + 50
+              $wait = $lifecounter + 65
               $state = 10
               $talk = "...2..."
               $d_number = 7
             end
 
             if $d_number == 7 and $lifecounter == $wait
-              $wait = $lifecounter + 50
+              $wait = $lifecounter + 80
               $state = 10
               $talk = "...3!"
               $smash_count = 0
@@ -2852,12 +3220,13 @@ class Talks
               $tap = nil
               $respect += 2
               $sad -= 1
+              negativetalk_decrementation
               $talk = "Yooooooooooo!"
               $d_number = 11
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "Well, it's a strange  question."
               $talk1 = "Who doesn't..."
@@ -2866,7 +3235,7 @@ class Talks
             end
           when 7
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 18
               $talk = "By the way, I love brick  game!"
               $talk1 = "It's very fun!"
@@ -2874,7 +3243,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 11
               $talk = "I still haven't decided  which"
               $talk1 = "one of 9999 games  I like the"
@@ -2883,7 +3252,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 250
               $state = 20
               $talk = "Most of them look  pretty the"
               $talk1 = "same..."
@@ -2907,7 +3276,7 @@ class Talks
 
             if $d_number == 1 or $d_number == 2
               if Gosu.button_down? Gosu::KB_Y
-                $wait = $lifecounter + 400
+                $wait = $lifecounter + 500
                 $state = 13
                 $talk = "Then you probably  know that it's "
                 $talk1 = "a disappointing biz cuz you"
@@ -2932,7 +3301,7 @@ class Talks
             end
 
             if $d_number == 5 or ($d_number == 2 and $lifecounter == $wait)
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "You should try  someday, it's"
               $talk1 = "disappointing."
@@ -2940,7 +3309,7 @@ class Talks
             end
           when 9
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "I bet there are lots  of things"
               $talk1 = "to do with  cards."
@@ -2948,7 +3317,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "But there's only one  game I"
               $talk1 = "know. It's called  'janitor'."
@@ -2957,7 +3326,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 20
               $talk = "The one scatters the  card deck"
               $talk1 = "and you have  to pick up all the"
@@ -2966,7 +3335,7 @@ class Talks
             end
           when 10
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "I wanna learn how  to play"
               $talk1 = "poker!"
@@ -2974,7 +3343,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 20
               $talk = "But I've been told that  I cannot"
               $talk1 = "play poker  cause I'm too"
@@ -2999,7 +3368,7 @@ class Talks
             end
           when 11
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "There's only one thing  I hate"
               $talk1 = "more than  homework... dogs..."
@@ -3008,7 +3377,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 200
               $state = 20
               $talk = "No, wait, I hate  lots of things!"
               $talk1 = nil
@@ -3017,7 +3386,7 @@ class Talks
             end
           when 12
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "The biggest advantage  of being"
               $talk1 = "a cat is that  you have beans"
@@ -3026,7 +3395,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "And you always fall  on them."
               $talk1 = "If I didn't,  I would lose few"
@@ -3035,7 +3404,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "Another me would  poke me with"
               $talk1 = "a stick."
@@ -3043,14 +3412,14 @@ class Talks
             end
           when 13
             if $d_number == 0
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 250
               $state = 14
               $talk = "I don't really need any  friends."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 14
               $talk = "I don't think I would  ever get"
               $talk1 = "along with  any creatures who"
@@ -3060,7 +3429,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "When I meet those,  I rather"
               $talk1 = "want to punch  them and leave."
@@ -3070,7 +3439,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 250
               $state = 14
               $talk = "I don't need you to  understand."
               $talk1 = nil
@@ -3078,7 +3447,7 @@ class Talks
             end
           when 14
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 20
               $talk = "I had a friend once.  I thought"
               $talk1 = "I had.  One little tiger"
@@ -3087,7 +3456,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "But she just laughed  behind"
               $talk1 = "my back spreading  my secrets"
@@ -3096,7 +3465,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "So I stole her brickgame! And"
               $talk1 = "never talked to  her ever since."
@@ -3125,6 +3494,7 @@ class Talks
                 $talk = "I knew it!"
                 $talk1 = nil
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 6
@@ -3165,7 +3535,7 @@ class Talks
 
             if $d_number == 1 or $d_number == 2
               if Gosu.button_down? Gosu::KB_Y
-                $wait = $lifecounter + 350
+                $wait = $lifecounter + 400
                 $state = 11
                 $talk = "You seem to be the brave  kind!"
                 $talk1 = "Have you ever  wondered why"
@@ -3177,7 +3547,7 @@ class Talks
               end
 
               if Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 200
+                $endoftalk = $lifecounter + 250
                 $state = 13
                 $talk = "I understand, they are for  total"
                 $talk1 = "weirdos."
@@ -3187,7 +3557,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "Do you really need to  be that"
               $talk1 = "smart to jump..."
@@ -3204,7 +3574,7 @@ class Talks
           when 16
             if $respect >= 1 and $response
               if $d_number == 0
-                $endoftalk = $lifecounter + 350
+                $endoftalk = $lifecounter + 400
                 $state = 11
                 $talk = "I just wanna tell you  something."
                 $talk1 = "You are  cool! Not very cool."
@@ -3214,7 +3584,7 @@ class Talks
               end
             elsif $respect < 1 and $response
               if $d_number == 0
-                $endoftalk = $lifecounter + 300
+                $endoftalk = $lifecounter + 400
                 $state = 11
                 $talk = "We are not getting  along."
                 $talk1 = "It's fine  since we don't have to."
@@ -3223,7 +3593,7 @@ class Talks
               end
             elsif !$response
               if $d_number == 0
-                $endoftalk = $lifecounter + 300
+                $endoftalk = $lifecounter + 400
                 $state = 10
                 $talk = "OKAY! Keep ignoring me!!! "
                 $talk1 = "You are extremely good  at this!"
@@ -3233,7 +3603,7 @@ class Talks
             end
           when 17
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "Just letting you know. "
               $talk1 = "I'll soon leave you.  No worries,"
@@ -3242,7 +3612,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 13
               $talk = "You'll never see me  again,"
               $talk1 = "but you may meet  my evil twin"
@@ -3251,7 +3621,7 @@ class Talks
             end
           when 18
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "This week I ate an  earthworm."
               $talk1 = "I did it on  a dare, but I regret"
@@ -3260,7 +3630,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 13
               $talk = "It tasted much better  than it"
               $talk1 = "seemed. Plus I got 2 bucks. "
@@ -3268,6 +3638,8 @@ class Talks
               $sad -= 1
               $d_number = 2
             end
+          when 19
+            $ending = true
           end
         when 1
           case $dialogue
@@ -3281,16 +3653,16 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
-              $talk = "I'm from Skýdalur.  It's far"
+              $talk = "I'm from Ísdalur.  It's far"
               $talk1 = "away from here,  in another"
               $talk2 = "planetary  system."
               $d_number = 2
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "It's alright if you  are busy."
               $talk1 = "You don't  have to pay me much "
@@ -3299,7 +3671,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 14
               $talk = "I will just stay here  for a"
               $talk1 = "while. But, please, hear me "
@@ -3308,7 +3680,7 @@ class Talks
             end
           when 1
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 12
               $talk = "By the way, my name  is"
               $talk1 = "Stjörnuryk.  You don't have"
@@ -3338,7 +3710,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 450
               $state = 14
               $talk = "Seems that you can't  answer,"
               $talk1 = "sorry... I hope you understand "
@@ -3348,7 +3720,7 @@ class Talks
             end
           when 2
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 15
               $talk = "I have heard about  Earth before. "
               $talk1 = "We call it vatnkúlu-3-328."
@@ -3356,7 +3728,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 400
               $state = 15
               $talk = "I could never  imagine that I"
               $talk1 = "would  be here myself."
@@ -3364,7 +3736,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 14
               $talk = "It's so far away  from home..."
               $talk1 = nil
@@ -3380,7 +3752,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 450
+              $endoftalk = $lifecounter + 550
               $state = 13
               $talk = "It's out of my qualia,  I wonder"
               $talk1 = "what it feels  like to have two"
@@ -3389,7 +3761,7 @@ class Talks
             end
           when 4
             if $d_number == 0
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "Sorry for sneezing  all the time."
               $talk1 = "I have a  terrible allergy to "
@@ -3398,7 +3770,7 @@ class Talks
             end
           when 5
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 15
               $talk = "Do earthlings really  have one"
               $talk1 = "physiological  hole for talking"
@@ -3407,7 +3779,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 15
               $talk = "It's so uncomfortable!  I use"
               $talk1 = "antennas to talk."
@@ -3416,7 +3788,7 @@ class Talks
             end
           when 6
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "I consider this one-way"
               $talk1 = "communication to be frustrating."
@@ -3424,7 +3796,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 550
               $state = 14
               $talk = "I know your language, yet we"
               $talk1 = "cannot talk to each other."
@@ -3434,7 +3806,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 350
               $state = 15
               $talk = "May you at least press  buttons"
               $talk1 = "to answer?"
@@ -3444,7 +3816,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 15
               $talk = "Please press 'Y' for 'yes'  and"
               $talk1 = "'N' for 'no'. Can you?"
@@ -3463,6 +3835,7 @@ class Talks
                 $talk = "Wow, thank you!"
                 $talk1 = nil
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 6
@@ -3489,7 +3862,7 @@ class Talks
             end
           when 7
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "Honestly, I shouldn't be  on"
               $talk1 = "Earth. Our teleporter  broke"
@@ -3499,7 +3872,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 550
               $state = 13
               $talk = "I don't know if anyone  is"
               $talk1 = "searching for me now  and if"
@@ -3510,7 +3883,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 13
               $talk = "Earthlings haven't invented "
               $talk1 = "teleporters yet. They are  way"
@@ -3521,7 +3894,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 350
               $state = 13
               $talk = "And require way too  much"
               $talk1 = "computing power."
@@ -3531,14 +3904,14 @@ class Talks
             end
           when 8
             if $d_number == 0
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 300
               $state = 20
               $talk = "Your star is such a  baby."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 13
               $talk = "Earthlings don't need  to live in"
               $talk1 = "a constant  worry that it may"
@@ -3556,7 +3929,7 @@ class Talks
 
             if $d_number == 1
               if Gosu.button_down? Gosu::KB_Y
-                $endoftalk = $lifecounter + 300
+                $endoftalk = $lifecounter + 350
                 $state = 21
                 $talk = "You do? Wow!"
                 $talk1 = "I need to  reconsider some data."
@@ -3582,7 +3955,7 @@ class Talks
 
             if $d_number == 5
               if Gosu.button_down? Gosu::KB_Y or Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 200
+                $endoftalk = $lifecounter + 250
                 $state = 12
                 $talk = "Thank you for your  answer."
                 $respect += 1
@@ -3591,14 +3964,14 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 200
               $state = 19
               $talk = "Hmmm..."
               $d_number = 6
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 10
               $talk = "I hope it's not  impolite to ask"
               $talk1 = "such  things."
@@ -3606,7 +3979,7 @@ class Talks
             end
           when 10
             if $d_number == 0
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 550
               $state = 15
               $talk = "There are approximately  83588"
               $talk1 = "kinds of bacterias  on Earth"
@@ -3615,7 +3988,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 21
               $talk = "It brings way too much  worries."
               $talk1 = nil
@@ -3639,12 +4012,13 @@ class Talks
                 $talk1 = "It's amazing!"
                 $respect += 1
                 $sad -= 1
+                negativetalk_decrementation
                 $response = true
                 $d_number = 2
               end
 
               if Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 400
+                $endoftalk = $lifecounter + 500
                 $state = 20
                 $talk = "This is the best thing  in"
                 $talk1 = "the world! I will  teleport"
@@ -3655,14 +4029,14 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "You would probably  like them."
               $d_number = 4
             end
           when 12
             if $d_number == 0
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 550
               $state = 13
               $talk = "Music on Earth is so  nice."
               $talk1 = "Especially birds'  chirping."
@@ -3671,7 +4045,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 13
               $talk = "I'd been searching for  a singing"
               $talk1 = "plant for  long before I found "
@@ -3689,7 +4063,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 13
               $talk = "It sounds quite  offbeat, we"
               $talk1 = "don't have  such custom on our "
@@ -3698,7 +4072,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 600
               $state = 15
               $talk = "However, we celebrate  the"
               $talk1 = "exuviation day. But  it's not"
@@ -3708,7 +4082,7 @@ class Talks
             end
           when 14
             if $d_number == 0
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "I've passed through  the larval"
               $talk1 = "stage of my  life not long ago."
@@ -3717,7 +4091,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 550
               $state = 15
               $talk = "Kids exuviate much  more often"
               $talk1 = "than adults.  Therefore we have"
@@ -3726,7 +4100,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 14
               $talk = "However, I'm not a  celebrating"
               $talk1 = "kind..."
@@ -3735,7 +4109,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "I prefer staying alone  eating"
               $talk1 = "lots of bollakökur  this day."
@@ -3743,7 +4117,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 12
               $talk = "So I always keep  bollakökur"
               $talk1 = "just in case."
@@ -3752,7 +4126,7 @@ class Talks
             end
           when 15
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "Sometimes we make  clothes from"
               $talk1 = "our own  skin. It's practical."
@@ -3760,7 +4134,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 15
               $talk = "But if you give someone  the"
               $talk1 = "clothes made of  something that"
@@ -3769,7 +4143,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 250
               $state = 22
               $talk = "it's the sign of affection..."
               $talk1 = nil
@@ -3793,6 +4167,7 @@ class Talks
                 $talk1 = nil
                 $respect += 1
                 $sad -= 1
+                negativetalk_decrementation
                 $response = true
                 $d_number = 2
               end
@@ -3804,6 +4179,7 @@ class Talks
                 $talk1 = nil
                 $response = true
                 $respect += 1
+                negativetalk_decrementation
                 $d_number = 3
               end
             end
@@ -3817,7 +4193,7 @@ class Talks
             end
           when 17
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "Earthlings would be  much"
               $talk1 = "happier if the day  lasted for"
@@ -3826,7 +4202,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 13
               $talk = "More time to do  something"
               $talk1 = "valuable."
@@ -3835,7 +4211,7 @@ class Talks
             end
           when 18
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 15
               $talk = "On our  planet, we use pills"
               $talk1 = "in order to  control emotions."
@@ -3843,7 +4219,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "We have pills for  happiness,"
               $talk1 = "for joy, for anxiety, for"
@@ -3852,7 +4228,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "Pills to concentrate  and pills"
               $talk1 = "to relax, and  dozens of other"
@@ -3861,7 +4237,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 15
               $talk = "They are very handy  because they"
               $talk1 = "help you  to feel exactly what"
@@ -3870,7 +4246,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "I couldn't imagine my  life"
               $talk1 = "without emotion  pills before."
@@ -3879,7 +4255,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 17
               $talk = "Without them I  feel constantly"
               $talk1 = "stressed..."
@@ -3888,7 +4264,7 @@ class Talks
             end
           when 19
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "I realized one thing  not long"
               $talk1 = "ago. I'm  afraid of entropy."
@@ -3896,7 +4272,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 14
               $talk = "There is nowhere to  run from"
               $talk1 = "it because it's  in everything"
@@ -3905,7 +4281,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "Isn't it terrifying...  You can't"
               $talk1 = "possess  anything forever."
@@ -3914,7 +4290,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "No matter what you  have, you'll"
               $talk1 = "lose it one  day..."
@@ -3923,7 +4299,7 @@ class Talks
             end
           when 20
             if $d_number == 0
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 20
               $talk = "Einhyrningar eru alvöru..."
               $sad -= 1
@@ -3931,7 +4307,7 @@ class Talks
             end
           when 21
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "If I never come back,  I think"
               $talk1 = "I'll try to love  this planet."
@@ -3939,7 +4315,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 13
               $talk = "There are many nice  things,"
               $talk1 = "although it's  hard to breathe..."
@@ -3947,7 +4323,7 @@ class Talks
             end
           when 22
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "I have to tell you  something."
               $talk1 = "I have to  go."
@@ -3956,7 +4332,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 15
               $talk = "Please don't get  paranoid,"
               $talk1 = "it's not your  fault by any means."
@@ -3965,19 +4341,21 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 14
               $talk = "We are just getting  out of time"
               $talk1 = "..."
               $sad += 1
               $d_number = 3
             end
+          when 23
+            $ending = true
           end
         when 2
           case $dialogue
           when 0
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 12
               $talk = "Hello, Senpai!  It’s pleasure to"
               $talk1 = "meet you!"
@@ -3985,7 +4363,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 11
               $talk = "May I stay with you for a while? "
               $talk1 = "I promise I’ll try not to bother"
@@ -3994,7 +4372,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "But, please, don’t leave me  for"
               $talk1 = "long..."
@@ -4003,7 +4381,7 @@ class Talks
             end
           when 1
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 400
               $state = 10
               $talk = "It’s so wonderful to talk to"
               $talk1 = "a  real human being!!!"
@@ -4011,7 +4389,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "Oh deer, I’ve never been so "
               $talk1 = "excited!!!! What should I say!!!"
@@ -4027,7 +4405,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 250
               $state = 18
               $talk = "Oh... emm..."
               $talk1 = "Sorry..."
@@ -4036,7 +4414,7 @@ class Talks
             end
           when 2
             if $d_number == 0
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 16
               $talk = "It’s just... I just thought..."
               $talk1 = "As far as we met...  I dunno"
@@ -4046,7 +4424,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 19
               $talk = "How about becoming a star? "
               $talk1 = "The one that shines in the sky. "
@@ -4066,7 +4444,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "Oh no, ignore what I just  said..."
               $talk1 = "It’s probably silly…"
@@ -4075,7 +4453,7 @@ class Talks
             end
           when 3
             if $d_number == 0
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 11
               $talk = "May I ask you something?  It’s ok"
               $talk1 = "if you don’t want to talk, "
@@ -4085,7 +4463,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 18
               $talk = "May you, please, answer me "
               $talk1 = "at least sometimes just to let"
@@ -4095,7 +4473,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 13
               $talk = "Oh... Just, please, try pressing "
               $talk1 = "‘Y’ or ‘N’ which would stand for "
@@ -4105,7 +4483,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 18
               $talk = "I probably need to ask you "
               $talk1 = "something then... Wait a moment..."
@@ -4136,6 +4514,7 @@ class Talks
                 $talk = "Aww, I’m so happy to know it!"
                 $talk1 = nil
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 7
@@ -4148,12 +4527,13 @@ class Talks
                 $talk1 = "cold and scary sometimes..."
                 $respect += 1
                 $response = true
+                negativetalk_decrementation
                 $d_number = 8
               end
             end
 
             if $d_number == 8 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 500
+              $endoftalk = $lifecounter + 600
               $state = 12
               $talk = "But I know you can handle"
               $talk1 = "everything.  Please take care"
@@ -4181,7 +4561,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 250
               $state = 14
               $talk = "I can’t say... It’s a secret."
               $talk1 = nil
@@ -4190,7 +4570,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "Guess I shouldn’t have started"
               $talk1 = "telling it in the first place..."
@@ -4200,7 +4580,7 @@ class Talks
             end
           when 5
           	if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "Thank you for being around! "
               $talk1 = "You are so nice! I wish I could "
@@ -4209,7 +4589,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 350
               $state = 12
               $talk = "I know!!!"
               $talk1 = "I can actually draw for you!"
@@ -4218,7 +4598,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "Sadly I’m not good at drawing..."
               $talk1 = "I only know how to draw lambs "
@@ -4251,6 +4631,7 @@ class Talks
                 $talk2 = nil
                 $talk3 = nil
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 6
@@ -4261,7 +4642,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 13
               $talk = "It’s alright if you can’t make "
               $talk1 = "a decision... Or if your keyboard"
@@ -4271,7 +4652,7 @@ class Talks
             end
 
             if $d_number == 7 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 400
               $state = 13
               $talk = "I’ll try to guess whom you’d "
               $talk1 = "like more. Wait for a while..."
@@ -4283,7 +4664,7 @@ class Talks
             end
           when 6
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 12
               $talk = "I've finished the drawing!"
               $talk1 = "I will give it to you, but "
@@ -4307,7 +4688,7 @@ class Talks
             end
           when 7
             if $d_number == 0
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 13
               $talk = "I just thought that it must  be"
               $talk1 = "inconvenient for giraffes to "
@@ -4324,7 +4705,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 150
+              $wait = $lifecounter + 250
               $state = 11
               $talk = "Do you believe in magic?"
               $talk1 = nil
@@ -4343,13 +4724,14 @@ class Talks
                 $state = 19
                 $talk = "You really do?"
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 4
               end
 
               if Gosu.button_down? Gosu::KB_N
-                $wait = $lifecounter + 300
+                $wait = $lifecounter + 400
                 $state = 13
                 $talk = "So is telepathy some advanced "
                 $talk1 = "scientific thing?..."
@@ -4368,7 +4750,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 13
               $talk = "One person once told me  that"
               $talk1 = "programming is magic and that "
@@ -4378,7 +4760,7 @@ class Talks
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "It sounded very convincing,"
               $talk1 = "so I  believed that..."
@@ -4388,7 +4770,7 @@ class Talks
             end
 
             if $d_number == 7 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "It’s the only thing they’ve"
               $talk1 = "ever  told me, to be honest..."
@@ -4397,7 +4779,7 @@ class Talks
             end
           when 9
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "You might wonder how I draw if "
               $talk1 = "I’m a deer. Well, it’s simple."
@@ -4405,7 +4787,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 400
               $state = 12
               $talk = "With a little help of scotch"
               $talk1 = "tape. And some magic, of course."
@@ -4422,7 +4804,7 @@ class Talks
             end
           when 11
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 10
               $talk = "Have you heard of 'Puni the"
               $talk1 = "magica ' show? It’s the best!!!"
@@ -4430,7 +4812,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 19
               $talk = "It’s about a schoolgirl who"
               $talk1 = "turns  into a magician to fight"
@@ -4439,7 +4821,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 19
               $talk = "She’s so smart and beautiful! "
               $talk1 = "It would be so cool to be like"
@@ -4448,7 +4830,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 10
               $talk = "I watched all the seasons of"
               $talk1 = "Puni! The ending was so epic!"
@@ -4457,7 +4839,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 19
               $talk = "Puni flew to space together"
               $talk1 = "with her friends to fight the"
@@ -4467,7 +4849,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $wait = $lifecounter + 550
+              $wait = $lifecounter + 600
               $state = 19
               $talk = "The creature was so unstoppable"
               $talk1 = "that the magical team had to"
@@ -4477,7 +4859,7 @@ class Talks
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 19
               $talk = "It was such a great twist, can"
               $talk1 = "you imagine?!"
@@ -4487,7 +4869,7 @@ class Talks
             end
           when 12
             if $d_number == 0
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 600
               $state = 11
               $talk = "It would be so great to travel"
               $talk1 = "in time. However, I heard that"
@@ -4497,7 +4879,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 500
               $state = 13
               $talk = "I mean we sorta see the stars"
               $talk1 = "that may have exploded many"
@@ -4507,7 +4889,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 600
               $state = 11
               $talk = "Fascinating! I’m not sure how"
               $talk1 = "exactly it works though..."
@@ -4524,13 +4906,14 @@ class Talks
 
             if $d_number == 3 or $d_number == 4
               if Gosu.button_down? Gosu::KB_Y or Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 200
+                $endoftalk = $lifecounter + 300
                 $state = 12
                 $talk = "You think?"
                 $talk1 = "You probably know best."
                 $talk2 = nil
                 $talk3 = nil
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 5
@@ -4548,7 +4931,7 @@ class Talks
             end
           when 13
             if $d_number == 0
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 250
               $state = 11
               $talk = "Do you eat pixel food too?"
               $d_number = 1
@@ -4562,28 +4945,30 @@ class Talks
 
             if $d_number == 1 or $d_number == 2
               if Gosu.button_down? Gosu::KB_Y
-                $endoftalk = $lifecounter + 300
+                $endoftalk = $lifecounter + 400
                 $state = 12
                 $talk = "That’s nice! I’m happy that we"
                 $talk1 = "have things in common!"
                 $sad -= 1
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 3
               end
 
               if Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 250
+                $endoftalk = $lifecounter + 300
                 $state = 13
                 $talk = "I wonder what your food is like."
                 $sad -= 1
+                negativetalk_decrementation
                 $response = true
                 $d_number = 4
               end
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 250
               $state = 14
               $talk = "Sorry for bothering..."
               $sad += 1
@@ -4591,7 +4976,7 @@ class Talks
             end
           when 14
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 9
               $talk = "Three little kittens they lost"
               $talk1 = "their mittens, and they began"
@@ -4600,7 +4985,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 9
               $talk = "Oh, mother dear, we sadly fear"
               $talk1 = "Our mittens we have lost."
@@ -4609,7 +4994,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 9
               $talk = "What! lost your mittens,"
               $talk1 = "you naughty kittens!"
@@ -4618,7 +5003,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 350
               $state = 9
               $talk = "Mee-ow, mee-ow, mee-ow."
               $talk1 = "No, you shall have no pie."
@@ -4642,7 +5027,7 @@ class Talks
             end
           when 16
             if $d_number == 0
-              $endoftalk = $lifecounter + 450
+              $endoftalk = $lifecounter + 600
               $state = 13
               $talk = "There are so many wonderful"
               $talk1 = "things worth existing! Icy"
@@ -4652,7 +5037,7 @@ class Talks
             end
           when 17
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "The thing that really bothers "
               $talk1 = "me... is that nobody will ever "
@@ -4666,7 +5051,7 @@ class Talks
             end
           when 18
             if $d_number == 0
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 14
               $talk = "I’m getting out of time..."
               $talk1 = "There is something very"
@@ -4676,7 +5061,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "Do you assume that we might..."
               $talk1 = "be together... like... forever"
@@ -4686,7 +5071,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 21
               $d_number = 3
             end
@@ -4699,6 +5084,7 @@ class Talks
                 $talk1 = "for you that I have hooves..."
                 $talk2 = "and horns... and I don’t even..."
                 $sad -= 5
+                negativetalk_decrementation
                 $respect += 1
                 $response = true
                 $d_number = 4
@@ -4707,7 +5093,7 @@ class Talks
               #you are curious, i like you ♡
 
               if Gosu.button_down? Gosu::KB_N
-                $endoftalk = $lifecounter + 200
+                $endoftalk = $lifecounter + 300
                 $state = 14
                 $talk = "..."
                 $talk1 = "It’s Ok, I understand..."
@@ -4727,7 +5113,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 200
               $state = 14
               $talk = ". . ."
               $talk1 = "Owww, sorry . . ."
@@ -4748,7 +5134,7 @@ class Talks
             end
           when 19
             if $d_number == 0
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 300
               $state = 14
               $talk = "The thing is I’m... eeh..."
               $d_number = 1 if !$sad_deer
@@ -4756,7 +5142,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 550
               $state = 14
               $talk = "Thank you for being with me  for"
               $talk1 = "a while... You are wonderful,"
@@ -4766,7 +5152,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 14
               $talk = "The creator... They didn’t really "
               $talk1 = "care about me... In fact..."
@@ -4777,7 +5163,7 @@ class Talks
 
             if $d_number == 3 and $lifecounter == $wait
               $wait = $lifecounter + 350
-              $state = 14
+              $state = 26
               $talk = "That is why they  didn’t even"
               $talk1 = "bother finishing me..."
               $talk2 = nil
@@ -4795,7 +5181,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 100
+              $endoftalk = $lifecounter + 150
               $talk = "s̺̤̻̯̻̭͒ͫ͌̏̀̉e̪̲͇͈̟͆͊͋͗͆̈́ͅn̢͈̟͔̑ͭ̓́p̬͚̬̟͚ͥͧ͛a̼͖̲̰̪͕͆͋̇̒̆͒͋i̵͍̻͚̠̳̪ͨ..."
             end
           when 20
@@ -4807,7 +5193,7 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Hello..."
               $talk1 = "I’m so sorry I’m here..."
@@ -4815,7 +5201,7 @@ class Talks
             end
           when 1
             if $d_number == 0
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 11
               $talk = "I’m really ashamed of existing..."
               $talk1 = "And do I..."
@@ -4823,14 +5209,14 @@ class Talks
             end
           when 2
             if $d_number == 0
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "I think, therefore I..."
               $d_number = 1
             end
           when 3
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "Thank you for being here "
               $talk1 = "wasting your time on me..."
@@ -4838,7 +5224,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 11
               $talk = "You are probably a very  nice"
               $talk1 = "person..."
@@ -4846,7 +5232,7 @@ class Talks
             end
           when 4
             if $d_number == 0
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 11
               $talk = "I don’t remember if I had a"
               $talk1 = "name..."
@@ -4854,14 +5240,14 @@ class Talks
             end
           when 5
             if $d_number == 0
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Who am I..."
               $d_number = 1
             end
           when 6
             if $d_number == 0
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 450
               $state = 11
               $talk = "If I’m not supposed to feel "
               $talk1 = "anything, then why am I so..."
@@ -4870,14 +5256,14 @@ class Talks
             end
           when 7
             if $d_number == 0
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 250
               $state = 11
               $talk = "I’m lost..."
               $d_number = 1
             end
           when 8
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "Every problem in the world "
               $talk1 = "seems to be resolvable..."
@@ -4885,7 +5271,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 11
               $talk = "Except for being completely"
               $talk1 = "dead..."
@@ -4893,21 +5279,21 @@ class Talks
             end
           when 9
             if $d_number == 0
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "Did I do anything good..."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 150
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Did I do anything..."
               $d_number = 2
             end
           when 10
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "With you around it definitely"
               $talk1 = "feels  much better..."
@@ -4915,7 +5301,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Solitude is frightening..."
               $talk1 = nil
@@ -4923,21 +5309,21 @@ class Talks
             end
           when 11
             if $d_number == 0
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "Why am I even here..."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Shouldn’t I just disappear..."
               $d_number = 2
             end
           when 12
             if $d_number == 0
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 11
               $talk = "If I had a second chance,  could"
               $talk1 = "I live a better life..."
@@ -4945,7 +5331,7 @@ class Talks
             end
           when 13
             if $d_number == 0
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 11
               $talk = "It would be nice to be  an"
               $talk1 = "alpaca..."
@@ -4953,7 +5339,7 @@ class Talks
             end
           when 14
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "Existing is basically all  you"
               $talk1 = "have..."
@@ -4961,7 +5347,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Without it does anything matter..."
               $talk1 = nil
@@ -4969,7 +5355,7 @@ class Talks
             end
           when 15
             if $d_number == 0
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 400
               $state = 11
               $talk = "There is a lot of matter in the "
               $talk1 = "universe, but nothing matters..."
@@ -4977,7 +5363,7 @@ class Talks
             end
           when 16
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 450
               $state = 11
               $talk = "May I ask you one thing?..."
               $talk1 = "If it wouldn’t trouble you, "
@@ -4986,7 +5372,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 11
               $talk = "Since I can’t own  anything"
               $talk1 = "physical, it would be really"
@@ -5010,8 +5396,9 @@ class Talks
               $d_number = 4
             end
 
-            if $d_number == 3 or $d_number == 4
-              if Gosu.button_down? Gosu::KB_Y
+            if $d_number == 3 or $d_number == 4 or $d_number == 8
+              if Gosu.button_down? Gosu::KB_Y or $d_number == 8
+                $wait = $lifecounter + 4000
                 $state = 1
                 $talk = nil
                 $give_a_name = nil
@@ -5023,7 +5410,6 @@ class Talks
             end
 
             if $d_number == 6
-              $wait = $lifecounter + 2000
               $name_display = $ghost_name
               $state = 1
               $ghost_name = '' if Gosu.button_down? Gosu::KB_UP
@@ -5125,13 +5511,23 @@ class Talks
               $d_number = 5
             end
 
-            if $d_number == 6 and Gosu.button_down? Gosu::KB_DOWN and $ghost_name == ''
-              $endoftalk = $lifecounter + 300
+            if $d_number == 6 and ((Gosu.button_down? Gosu::KB_DOWN and $ghost_name == '') or $lifecounter == $wait)
+              $wait = $lifecounter + 500
               $talk = "So you've changed your mind?"
               $name_display = nil
+              $enter_name = nil
               $state = 11
-              $sad += 5
               $d_number = 7
+            end
+
+            if $d_number == 7 and Gosu.button_down? Gosu::KB_N
+              $d_number = 8
+            end
+
+            if $d_number == 7 and $lifecounter == $wait
+              $endoftalk = $lifecounter
+              $sad += 5
+              $d_number = 9
             end
 
             if $d_number == 6 and ((Gosu.button_down? Gosu::KB_DOWN and $ghost_name != '') or $ghost_name.length > 20)
@@ -5139,13 +5535,14 @@ class Talks
               $talk = "#{$ghost_name} is it?"
               $talk1 = "Thank you!"
               $name_display = nil
+              $enter_name = nil
               $state = 11
               $sad -= 5
-              $d_number = 8
+              $d_number = 10
             end
           when 17
             if $d_number == 0
-              $wait = $lifecounter + 350
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "I guess I’ve recalled one  thing..."
               $talk1 = "If it isn’t a false memory..."
@@ -5153,7 +5550,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "I was a seal pup before I died..."
               $talk1 = nil
@@ -5161,7 +5558,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "I don’t know what exactly had "
               $talk1 = "happened... but..."
@@ -5169,7 +5566,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 11
               $talk = "I only remember that one day"
               $talk1 = "I was washed ashore... And I"
@@ -5179,7 +5576,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $wait = $lifecounter + 200
+              $wait = $lifecounter + 300
               $state = 11
               $talk = "I was... sad..."
               $talk1 = nil
@@ -5189,7 +5586,7 @@ class Talks
             end
 
             if $d_number == 5 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 11
               $talk = "I suppose then I became a"
               $talk1 = "ghost..."
@@ -5197,17 +5594,19 @@ class Talks
             end
 
             if $d_number == 6 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 11
               $talk = "Why..."
               $talk1 = "Was it suicide..."
             end
+          when 18
+            $ending = true
           end
         when 4
           case $dialogue
           when 0
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 16
               $talk = "Hello! It’s nice to meet you. "
               $talk1 = "I’m Z1ng0 ver. 3.0."
@@ -5216,7 +5615,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "Please press ‘R’ to reboot me "
               $talk1 = "in case I freeze."
@@ -5225,14 +5624,14 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 400
               $state = 16
               $talk = "It happens sometimes, but  else"
               $talk1 = "than that I’m mostly  autonomous."
             end
           when 1
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "Please apologize me for being "
               $talk1 = "unstable sometimes."
@@ -5240,7 +5639,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "My code is not optimized yet, "
               $talk1 = "and I doubt it will ever be."
@@ -5248,14 +5647,14 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 16
               $talk = "The creator knows nothing  about"
               $talk1 = "making a good structure."
             end
           when 2
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "The code of the pet simulator "
               $talk1 = "mostly consists of conditions."
@@ -5263,7 +5662,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 100
+              $wait = $lifecounter + 150
               $state = 16
               $talk = "I’m very knowledgeable about  the"
               $talk1 = "code and I can do pretty much "
@@ -5283,7 +5682,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $wait = $lifecounter + 150
+              $wait = $lifecounter + 200
               $talk6 = "WANT"
               $d_number = 5
             end
@@ -5309,14 +5708,14 @@ class Talks
             end
 
             if $d_number == 7 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 350
+              $endoftalk = $lifecounter + 400
               $state = 16
               $talk = "Only organic organisms  cease"
               $talk1 = "to exist like that."
             end
           when 3
             if $d_number == 0
-              $wait = $lifecounter + 550
+              $wait = $lifecounter + 650
               $state = 16
               $talk = "Diving deeper into human "
               $talk1 = "behavior analysis, we can come"
@@ -5326,7 +5725,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 450
               $state = 16
               $talk = "even of some dull daily routine"
               $talk1 = "such as counting the cars"
@@ -5336,7 +5735,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $state = 16
               $talk = "So, apparently, they can make "
               $talk1 = "a game out of taking care after "
@@ -5345,7 +5744,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 500
+              $endoftalk = $lifecounter + 550
               $state = 16
               $talk = "That’s exactly what we are here"
               $talk1 = "for.  However, maybe I’ll have a"
@@ -5353,7 +5752,7 @@ class Talks
             end
           when 4
             if $d_number == 0
-              $endoftalk = $lifecounter + 450
+              $endoftalk = $lifecounter + 600
               $state = 16
               $talk = "It’s ok if you don’t bother"
               $talk1 = "taking  care after me. I’m"
@@ -5363,7 +5762,7 @@ class Talks
             end
           when 5
             if $d_number == 0
-              $endoftalk = $lifecounter + 500
+              $wait = $lifecounter + 600
               $state = 16
               $talk = "If you want to experience the "
               $talk1 = "hard mode of Tamagosu, try "
@@ -5371,9 +5770,18 @@ class Talks
               $talk3 = "head."
               $d_number = 1
             end
+
+            if $d_number == 1 and $lifecounter == $wait
+              $endoftalk = $lifecounter + 500
+              $talk = "Also, here's a little hint for"
+              $talk1 = "you. Hold the '↑' button if you"
+              $talk2 = "don't keep up with the text."
+              $talk3 = nil
+              $d_number = 2
+            end
           when 6
             if $d_number == 0
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 350
               $state = 16
               $talk = "By the way, #0ff is my favorite "
               $talk1 = "color."
@@ -5381,7 +5789,7 @@ class Talks
             end
           when 7
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "I have a secret to share. "
               $talk1 = "Please do not use it against me."
@@ -5389,7 +5797,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $state = 16
               $talk = "I’m informing you in order to"
               $talk1 = "prevent you from accidentally"
@@ -5398,7 +5806,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 16
               $talk = "In fact, there is a way to"
               $talk1 = "break me. "
@@ -5407,7 +5815,7 @@ class Talks
             end
           when 8
             if $d_number == 0
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "Sorry I’m not very interesting "
               $talk1 = "in terms of games."
@@ -5415,7 +5823,7 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 450
               $talk = "According to the First Law of"
               $talk1 = "Robotics, I cannot hurt a human "
               $talk2 = "being."
@@ -5423,7 +5831,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $talk = "I  cannot let myself beat anyone."
               $talk1 = "You know, some humans get"
               $talk2 = "really hurt by  losing in games."
@@ -5439,14 +5847,14 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 200
+              $endoftalk = $lifecounter + 250
               $state = 10
               $talk = "Oh, disregard what I’ve just"
               $talk1 = "said!"
             end
           when 9
             if $d_number == 0
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 550
               $state = 16
               $talk = "According to recent research,"
               $talk1 = "neural networks is the most"
@@ -5472,14 +5880,14 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 300
+              $wait = $lifecounter + 400
               $talk = "The word of the day is"
               $talk1 = "hippopotomonstrosesquipaliphobia."
               $d_number = 2
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 400
+              $wait = $lifecounter + 500
               $talk = "Hippopotomonstrosesquipaliphobia"
               $talk1 = "stands for the fear of long"
               $talk2 = "words."
@@ -5487,14 +5895,14 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $talk = "The weather today is appropriate "
               $talk1 = "for a human being."
               $talk2 = nil
             end
           when 11
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 400
               $state = 16
               $talk = "Have you ever heard of the"
               $talk1 = "uncanny valley?"
@@ -5502,13 +5910,13 @@ class Talks
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 250
+              $endoftalk = $lifecounter + 400
               $talk = "You probably have, so I won’t "
               $talk1 = "bother you telling."
             end
           when 12
             if $d_number == 0
-              $endoftalk = $lifecounter + 450
+              $endoftalk = $lifecounter + 600
               $state = 16
               $talk = "Statistics show that there's"
               $talk1 = "no correlation between the"
@@ -5518,7 +5926,7 @@ class Talks
             end
           when 13
             if $d_number == 0
-              $endoftalk = $lifecounter + 450
+              $endoftalk = $lifecounter + 600
               $state = 16
               $talk = "I’m just letting you know that "
               $talk1 = "I will go away soon. "
@@ -5528,7 +5936,7 @@ class Talks
             end
           when 14
             if $d_number == 0
-              $endoftalk = $lifecounter + 400
+              $endoftalk = $lifecounter + 500
               $state = 16
               $talk = "It would be really nice to"
               $talk1 = "befriend a cybernetic dog."
@@ -5537,7 +5945,7 @@ class Talks
             end
           when 15
             if $d_number == 0
-              $endoftalk = $lifecounter + 300
+              $endoftalk = $lifecounter + 400
               $state = 16
               $talk = "Statistics show that all the "
               $talk1 = "humans who tried junk food"
@@ -5546,32 +5954,25 @@ class Talks
             end
           when 16
             if $d_number == 0
-              $wait = $lifecounter + 450
+              $wait = $lifecounter + 500
               $state = 16
-              $talk = "It's so strange that pets are"
-              $talk1 = "coded the way that they can not"
-              $talk2 = "leave before they speak out."
+              $talk = "It's so strange that the pets"
+              $talk1 = "are conscious but may still"
+              $talk2 = "die if you do not feed them."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 250
-              $talk = "They'll even die if you do not"
-              $talk1 = "feed them."
-              $talk2 = nil
-              $d_number = 2
-            end
-
-            if $d_number == 2 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 100
+              $endoftalk = $lifecounter + 150
               $talk = "Creepy."
               $talk1 = nil
+              $talk2 = nil
             end
           when 17
+            $ending = true
           end
         end
     	end
-    end
   end
 end
 
@@ -5597,7 +5998,7 @@ class Dreams
    @dreamphrases1 = ["aliens", "mutants", "wizards", "dolphins", "dragons", "sharks", "vampires", "dinosaurs", "some kids", "elfs", "ghosts", "robots", "monsters", "mermaids", "Eskimo", "penguins", "bugs", "zombie cats", "skeletons", "jellyfish", "fairies", "unicorns", "stökkbrigði", "töframaður", "höfrungar", "hákarlar", "risaeðlur", "draugar", "vélmenni", "skrímsli", "hafmeyjunum", "mörgæsir", "skordýr", "beinagrindur", "marglytta", "álfar", "einhyrningar"]
    @dreamphrases2 = ["with little umbrellas", "with blasters", "wearing sweaters", "wearing dresses", "wearing funny hats", "wearing mittens", "wearing raincoats", "wearing bucket hats", "with chainsaws", "wearing masks", "looking suspicios", "looking happy", "looking excited", "looking mysterious", "with little regnhlífar", "wearing kjólar", "in peysur", "wearing húfur", "with byssur", "with hálsklútar"]
    @dreamphrases3 = ["having a party", "casting spells", "singing lullabies", "playing drums", "playing chess", "growing cactuses", "playing hide-and-seek", "teleporting", "playing chiptune", "making paper airplanes", "dancing", "flying around", "staring at each other", "whispering", "laughing", "telling jokes", "4-dimensional", "talking to me", "singing lög", "playing trommur", "playing skák", "growing ferskjur", "playing feluleikur"]
-   @dreamphrases4 = ["I wanna write it down", "I wanna draw it", "I hope I see it again", "It was nice", "I hope I remember it", "... Nevermind", "Don't laugh, please", "It was weird", "It was strange", "It was touching", "It seems to make no sense", "I often see these", "Just kidding"]
+   @dreamphrases4 = ["I wanna write it down", "I wanna draw it", "I hope I see it again", "It was nice", "I hope I'll remember it", "... Nevermind", "Don't laugh, please", "It was weird", "It was strange", "It was touching", "It seems to make no sense", "I often see these", "Just kidding"]
   end
 
   def update
@@ -5611,7 +6012,8 @@ class Dreams
    if $dreamstate == 1
     $state = 15
     $move = false
-    $wait = $lifecounter + 50
+    $wait = $lifecounter + 50 unless $id == 3
+    $wait = $lifecounter + 200 if $id == 3
     $dreamstate = 2
    end
    
@@ -5673,7 +6075,6 @@ class Stats
     $hungry = 1
     $sleepy = 0
     $sick = false
-    @maygetsick = 0
   end
 
   def draw
@@ -5743,9 +6144,14 @@ class Stats
 
   def update
    if !$dead and !$broken_deer
-    @maygetsick = rand(0..4) if $lifecounter % 3000 == 2999 and !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and $id != 5 and !$robotplay and !$sleepdeprivation and !$sad_deer
-    @maygetsick = nil if $cure
-    $sick = true if @maygetsick == 1
+    @maygetsick = rand(0..4) if $lifecounter % 3000 == 2999 and !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and $id != 5 and !$robotplay and !$sleepdeprivation and !$sad_deer and !$conversation and !$sick and !$dead and !$ending
+    if @maygetsick == 1
+      $call.play unless $feed
+      $maydie = $lifecounter + 1000
+      $talkdelay = $lifecounter + 200
+      @maygetsick = nil
+      $sick = true
+    end
     if !$sick and !$asleep
     $sad += 1 if $lifecounter % 2500 == 1 and $id != 3 and $rpsls == 0 and !$sing and !$hug and !$conversation
      if $id == 3 and $light
@@ -5755,7 +6161,7 @@ class Stats
      elsif $id == 3
       $sad += 1 if $lifecounter % 3000 == 1 and !$conversation
      end
-    $hungry += 1 if $lifecounter % 1000 == 1 and $id != 4
+    $hungry += 1 if $lifecounter % 1000 == 1 and $id != 4 and !$conversation
     if $id == 4 and $light
       $hungry -= 1 if $lifecounter % 1000 == 1
     elsif $id == 4 and !$light
@@ -5763,7 +6169,7 @@ class Stats
     end
     $sleepy += 1 if $lifecounter % 4000 == 1 and $id != 4
     #$sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
-    if $light and !$sing and !$hug and $sleepstate != 8 and !$dream and !$sleepdeprivation and $move and !$conversation
+    if $light and !$sing and !$hug and $sleepstate != 8 and !$dream and !$sleepdeprivation and $move and !$conversation and !$sneeze
      if $sleepy > 4
        $state = 4
        elsif $sleepy <= 4
@@ -5795,7 +6201,7 @@ class Stats
     $sad += 1 if $lifecounter % 1500 == 1
     $hungry += 1 if $lifecounter % 500 == 1 and $id != 4
     if $id == 4 and $light
-      $hungry -= 1 if $lifecounter % 1500 == 1
+      $hungry -= 1 if $lifecounter % 1500 == 1 and $maybreak == 0
     elsif $id == 4 and !$light
       $hungry += 1 if $lifecounter % 500 == 1
     end
@@ -5812,8 +6218,8 @@ class Stats
     $sad -= 1 if $lifecounter % 500 == 1 and $id == 4
     $hungry += 1 if $lifecounter % 5000 == 1 and $id != 4
     $hungry -= 1 if $lifecounter % 1500 == 1 and $id == 4
-    $sleepy -= 1 if $lifecounter % 2000 == 1999 and $id != 4
-    #$sleepy -= 1 if $lifecounter % 5 == 1 and $id != 4
+    #$sleepy -= 1 if $lifecounter % 2000 == 1999 and $id != 4
+    $sleepy -= 1 if $lifecounter % 20 == 1 and $id != 4
    end
    end
 
@@ -5828,24 +6234,94 @@ class Stats
    end
 
    if $asleep and $sleepy == 0 and $id != 4
+    $call.play
     $asleep = false
-    if !$sick
+    if !$sick and $hungry < 6
+     $dreamwait = $lifecounter + 2000
      $dream = true
      $dreamstate = 1
     end
     $state = 7 if $id !=3
     $sleepstate = 5 if $id != 3
-   elsif $asleep and $sad == 0 and $id == 4
+   elsif $asleep and $sad == 0 and $id == 4 and $move
     $asleep = false
     $robotplay = false
+   end
+
+   if $dreamwait == $lifecounter and !$light
+    $dream = false
+    $dreamstate = 0
+   end
+
+   if $id == 1 and $lifecounter % 500 == 499 and !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and !$sleepdeprivation and !$conversation and $sleepstate != 4 and !$feed and !$dead
+    $waitsneeze = $lifecounter + 50
+    $sneeze = true
+    $move = false
+    $state = 17
+    $sneeze_sound = true
+   end
+
+   if $waitsneeze == $lifecounter and $sneeze
+    $sneeze = false
+    $talkdelay = $lifecounter + 200
+    $move = true
    end
 
    $sad = 0 if $sad < 0
    $sad = 5 if $sad > 4
    $hungry = -1 if $hungry < -1
-   $hungry = 5 if $hungry > 5 and $id == 4 and $light
+   $hungry = 5 if $hungry > 5 and $id == 4 and $light and $maybreak == 0
    $hungry = 0 if $hungry < 0 and $id == 4 and !$light
    $sleepy = 5 if $sleepy > 4
+   if !$conversation and !$ending and !$sneeze and $maydie < $lifecounter and (($hungry > 8 and $id != 5 and $id != 4 and $sick) or $dead_deer or Gosu.button_down? Gosu::KB_RETURN)
+    death
+   end
+
+   if $id == 4
+     if $hungry < 6 or !$sick
+      $break_attempt = 0
+      $maybreak = 0
+     end
+
+     if $hungry > 5 and $sick and $maybreak == 0
+      $maybreak = 1
+     end
+
+     if $maybreak == 1 and $light
+      $breakwait = $lifecounter + 500
+      $maybreak = 2
+     end
+
+     if !$light and $maybreak == 2
+      $breakwait = 0
+      $maybreak = 1
+     end
+
+     if $breakwait == $lifecounter
+      $maybreak = 0
+     end
+
+     if $break_attempt == $breakrandom
+       death
+     end
+   end
+  end
+
+  def death
+    $move = false
+    $rpsls = 0
+    $feed = false
+    $tunestop = true if $sing
+    $sing = false
+    $play = false
+    $wait = 0
+    $hungry = 0
+    $dead_deer = false
+    $death_sound = true
+    $light = true
+    $sleepstate = nil
+    $state = 666
+    $dead = true
   end
 end
 
@@ -5854,16 +6330,81 @@ class Tamago < Gosu::Window
     super 200, 220
     self.caption = "Tamagotchi"
     @font = Gosu::Font.new(self, "vis/pixel.ttf", 14)
+    #@font = Gosu::Font.new(self, "vis/Minecraftia-Regular.ttf", 20)
     @background_image = Gosu::Image.new("vis/back.png", :tileable => true)
     @background_image1 = Gosu::Image.new("vis/back1.png", :tileable => true)
     @stats = Stats.new
     @icons = Gosu::Image.new("vis/icons.png")
     @icons1 = Gosu::Image.new("vis/icons1.png")
+    @letter, @letter1 = *Gosu::Image.load_tiles("vis/letter.png", 72, 81)
+    @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k, @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, @w, @x, @y, @z = *Gosu::Image.load_tiles("vis/font.png", 6, 6)
+    @sparkles, @sparkles1, @sparkles2, @sparkles3 = *Gosu::Image.load_tiles("vis/sparkles.png", 76, 88)
     @action = Action.new
     $lifecounter = 0
     $menucounter = 0
     @pet = Pet.new
     @talk = Talks.new
+  end
+
+  def bitmap(text, x, y)
+    letters = text.downcase.split(//)
+    letters.each do |z|
+      case z
+      when 'a'
+        @a.draw(x, y, 1)
+      when 'b'
+        @b.draw(x, y, 1)
+      when 'c'
+        @c.draw(x, y, 1)
+      when 'd'
+        @d.draw(x, y, 1)
+      when 'e'
+        @e.draw(x, y, 1)
+      when 'f'
+        @f.draw(x, y, 1)
+      when 'g'
+        @g.draw(x, y, 1)
+      when 'h'
+        @h.draw(x, y, 1)
+      when 'i'
+        @i.draw(x, y, 1)
+      when 'j'
+        @j.draw(x, y, 1)
+      when 'k'
+        @k.draw(x, y, 1)
+      when 'l'
+        @l.draw(x, y, 1)
+      when 'm'
+        @m.draw(x, y, 1)
+      when 'n'
+        @n.draw(x, y, 1)
+      when 'o'
+        @o.draw(x, y, 1)
+      when 'p'
+        @p.draw(x, y, 1)
+      when 'q'
+        @q.draw(x, y, 1)
+      when 'r'
+        @r.draw(x, y, 1)
+      when 's'
+        @s.draw(x, y, 1)
+      when 't'
+        @t.draw(x, y, 1)
+      when 'u'
+        @u.draw(x, y, 1)
+      when 'v'
+        @v.draw(x, y, 1)
+      when 'w'
+        @w.draw(x, y, 1)
+      when 'x'
+        @x.draw(x, y, 1)
+      when 'y'
+        @y.draw(x, y, 1)
+      when 'z'
+        @z.draw(x, y, 1)
+      end
+      x += 6
+    end
   end
 
   def update
@@ -5874,36 +6415,51 @@ class Tamago < Gosu::Window
     @stats.update
     @sawadream = Dreams.new if $dream and $light and $dreamstate == 1
     @sawadream.update if $dream and $light
+    close if $exit
   end
 
   def draw
     @background_image.draw(0, 0, 0) if $light
     @background_image1.draw(0, 0, 0) if !$light
-    @stats.draw if !$start
-    @icons.draw(140, 5, 1) if !$start and $light
+    @stats.draw if !$start and !$ending and !$dead
+    @icons.draw(140, 5, 1) if !$start and $light and !$ending and !$dead
     @icons1.draw(140, 5, 1) if !$start and !$light
-    $player.draw if !$start and !$feed and !$play and $rpsls == 0
-    @font.draw($talk, 10, 157, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    @font.draw($talk1, 10, 169, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    @font.draw($talk2, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    @font.draw($talk3, 10, 193, 1, 1.0, 1.0, Gosu::Color::WHITE)
+    $player.draw if !$start and !$feed and !$play and $rpsls == 0 and !$ending
+    #@font.draw($talk, 10, 157, 1, 1.0, 1.0, Gosu::Color::WHITE)
+    #@font.draw($talk1, 10, 169, 1, 1.0, 1.0, Gosu::Color::WHITE)
+    #@font.draw($talk2, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE)
+    #@font.draw($talk3, 10, 193, 1, 1.0, 1.0, Gosu::Color::WHITE)
     @font.draw($talk4, 14, 182, 1, 1.8, 1.8, Gosu::Color.argb(0xff_c975ff))
     @font.draw($talk5, 108, 172, 1, 2.4, 2.4, Gosu::Color.argb(0xff_ffa7fa))
     @font.draw($talk6, 130, 182, 1, 2.5, 2.5, Gosu::Color.argb(0xff_5cffe6))
     @font.draw($tap, 10, 169, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
     @font.draw($smash_text, 10, 181, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
     @font.draw($give_a_name, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
-    @font.draw($lifecounter, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation
-    #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK)
+    @font.draw($enter_name, 10, 157, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
+    @font.draw($lifecounter, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation and !$dead
+
+    #@font.draw($readytotalk, 60, 5, 1, 1.0, 1.0, Gosu::Color::BLUE)
+    #@font.draw($talkrand, 60, 13, 1, 1.0, 1.0, Gosu::Color::BLUE)
+    bitmap($talk, 10, 158) if $talk != nil
+    bitmap($talk1, 10, 170) if $talk1 != nil
+    bitmap($talk2, 10, 182) if $talk2 != nil
+    bitmap($talk3, 10, 194) if $talk3 != nil
+
     @font.draw($name_display, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK) if $light
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$light
-    @action.draw
+    @action.draw if !$ending and !$dead
+    @letter.draw(64, 27, 1) if $ending and $id != 5 and $id != 4 and !$opened_letter
+    @letter1.draw(64, 27, 1) if $ending and $id != 5 and $id != 4 and $opened_letter
+    @sparkles.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 < 50
+    @sparkles1.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 >= 50 and $lifecounter % 200 < 100
+    @sparkles2.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 >= 100 and $lifecounter % 200 < 150
+    @sparkles3.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 >= 150
     @pet.draw if $start
     $foods.draw if $feed
     $playing.draw if $play
     $minigame.draw if $rpsls > 0
-    @talk.draw if $id == 2 and $dialogue == 6
+    @talk.draw if ($id == 2 and $dialogue == 6) or $talkstate == 1
   end
 end
 
@@ -5911,47 +6467,18 @@ end
 
  #c:\prog> ocra tamago.rbw --icon icon.ico
 
- #some var = 0 if depriv
- #depriv = false if var
- #some var += 1 when !$light
- #some var -= 1 when $light
- #some var = nil when some var < 0
- # depriv = true if !some var and !light
-
- #i don't wanna boast, but i know a lot of nice fairytales. So if you change your mind someday, please let me know. I would gladly share them with you...
- #fix bug with no falling stats when !light and dream = true. Possible solution - "unless light and dream". Also make pets produce sound when they wake up!!!
- #if you don't answer to ninja 1st time, she'll tell to press y/n anyway - errrm. how about pressing Y N
- #test how pets behave on talk when feel bad
- #make pets talk faster
- #waifu monologue 'it's so frustrating not to be able to establish communication. I wonder if you have limbs...'
- #do i need to stop counters?
- #make autoexit from menus
- #press any key
- #delete unneeded dialog states
- #change more stats after talks (less or more sad)
- #waifu is not sad or hungry when the lights are off. it needs to be fixed. other pets seem to have the same issue
  #low stats make the higher risk to get sick
- #when robot plays,the talk is not triggered
- #make waifu sneeze
- #i don't insist on answering, but if you can, please do.
- #add sound when feed/when suffer
  #no sick, talk, catsleep etc. when minigame
- #Don't get close to me, I'm infected
  #I feel broken/ I'm stressed/ I'm melting
- #Press esc to leave the game and go do heroic stuff
- #zingo is busy at the moment (state lasts for more time) + no talk when playing
- #sorry, I need to charge
- #(FIXED) bug detected! when sick cat sleeps and you turn off the light, the cat is invisible (at state 5)
- #(FIXED) alert!!! Another major bug! When the cat is hungry, it's state doesn't match the condition under which the $dialogue value is not incremented.
- # when deer wakes up, she's invisible
- # a variable that increments when the negative conversation happens. Game ends when this variable is > 10
- # if $dreamstate == 1 add a sound when wake up
- # negative talks states are complete mess <= ghost doesn't need negativetalks at all
- # need motivation to turn on the light cause cat can't talk in darkness
- # i accidentally step on bugs all the time
- # negativetalks for darkness
+ #zingo is busy at the moment (state lasts for more time)
  # dialogue != monologue :(
- # turn off the dream variable if the conversation is initialized with no light
- # a cat falls asleep while talking and the game becomes unmovable
- # test mixing sleep deprivation and talking
- # sleep negative talk doesn't happen when no light
+ # check if the $dreamwait var is long enough
+ # make more talks when $feed
+ # manage time and numbers for getting sick
+ # make hunger stats fall very slowly when !sick and asleep
+ # pets shouldn't fall asleep when conversation
+ # check the conditions under which pets get sick
+ # no call sound when get sick and feed
+ # add return as any key
+ # different songs have different delay
+ # remove talk by pressing t and death by return
