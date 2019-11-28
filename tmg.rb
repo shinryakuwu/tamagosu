@@ -30,6 +30,7 @@ class Pet
   $negative_talk = 0
   $negative_incrementation = 0
   $negativetalk_incrementation = 0
+  $image_to_text = 0
   $maydie = 0
   $talkrand = $lifecounter + rand(550..1000)
   #$readytotalk = true (remove the line above)
@@ -37,7 +38,7 @@ class Pet
   $maybreak = 0
   $respect = 0
   $response = false
-  $dialogue = 0
+  $dialogue = 19
  end
  
  def draw
@@ -1923,6 +1924,7 @@ class Talks
    if $lifecounter == $endoftalk and $conversation
     $endoftalk = 0
     $wait = 0
+    $image_to_text = 0
     $talkstate = 0
     $d_number = 0
     $dialogue += 1 if $negative_talk == 0
@@ -2522,7 +2524,7 @@ class Talks
             end
           when 10
             if $d_number == 0
-              $endoftalk = $lifecounter + 500
+              $endoftalk = $lifecounter + 550
               $state = 18
               $talk = "Don't worry, I'm not  the shouting"
               $talk1 = "kind.  I'm more like... a flower. "
@@ -5175,14 +5177,18 @@ class Talks
               $state = 24
               $broken_deer = true
               $glitch = $lifecounter
-              $talk = "And now I’m out of t͍̰͇̙̺͠i̠̖m̪̦̬e̢̢͈͔̫̭͔ͅ..."
+              $image_to_text = 3
+              #$talk = "And now I’m out of t͍̰͇̙̺͠i̠̖m̪̦̬e̢̢͈͔̫̭͔ͅ..."
+              $talk = "And now I’m out of"
               $talk1 = nil
               $d_number = 5
             end
 
             if $d_number == 5 and $lifecounter == $wait
               $endoftalk = $lifecounter + 150
-              $talk = "s̺̤̻̯̻̭͒ͫ͌̏̀̉e̪̲͇͈̟͆͊͋͗͆̈́ͅn̢͈̟͔̑ͭ̓́p̬͚̬̟͚ͥͧ͛a̼͖̲̰̪͕͆͋̇̒̆͒͋i̵͍̻͚̠̳̪ͨ..."
+              $talk = nil
+              #$talk = "s̺̤̻̯̻̭͒ͫ͌̏̀̉e̪̲͇͈̟͆͊͋͗͆̈́ͅn̢͈̟͔̑ͭ̓́p̬͚̬̟͚ͥͧ͛a̼͖̲̰̪͕͆͋̇̒̆͒͋i̵͍̻͚̠̳̪ͨ..."
+              $image_to_text = 1
             end
           when 20
             if $d_number == 0
@@ -6337,8 +6343,9 @@ class Tamago < Gosu::Window
     @icons = Gosu::Image.new("vis/icons.png")
     @icons1 = Gosu::Image.new("vis/icons1.png")
     @letter, @letter1 = *Gosu::Image.load_tiles("vis/letter.png", 72, 81)
-    @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k, @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, @w, @x, @y, @z = *Gosu::Image.load_tiles("vis/font.png", 6, 6)
+    @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k, @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, @w, @x, @y, @z, @comma, @exclamation, @dot, @question, @apostrophe, @quotes, @tilde, @hyphen, @star, @one, @two, @three, @four, @five, @six, @seven, @eight, @nine, @zero, @two_dots, @emphasis, @mutated_d, @ae, @three_dots, @colon = *Gosu::Image.load_tiles("vis/font.png", 6, 7)
     @sparkles, @sparkles1, @sparkles2, @sparkles3 = *Gosu::Image.load_tiles("vis/sparkles.png", 76, 88)
+    @glitchy, @glitchy1, @glitchy2, @glitchy3, @glitchy4, @glitchy5, @glitchy6, @glitchy7, @glitchy8 = *Gosu::Image.load_tiles("vis/zalgo.png", 189, 13)
     @action = Action.new
     $lifecounter = 0
     $menucounter = 0
@@ -6352,58 +6359,178 @@ class Tamago < Gosu::Window
       case z
       when 'a'
         @a.draw(x, y, 1)
+        x += 6
       when 'b'
         @b.draw(x, y, 1)
+        x += 6
       when 'c'
         @c.draw(x, y, 1)
+        x += 6
       when 'd'
         @d.draw(x, y, 1)
+        x += 6
       when 'e'
         @e.draw(x, y, 1)
+        x += 6
       when 'f'
         @f.draw(x, y, 1)
+        x += 6
       when 'g'
         @g.draw(x, y, 1)
+        x += 6
       when 'h'
         @h.draw(x, y, 1)
+        x += 6
       when 'i'
         @i.draw(x, y, 1)
+        x += 4
       when 'j'
         @j.draw(x, y, 1)
+        x += 6
       when 'k'
         @k.draw(x, y, 1)
+        x += 6
       when 'l'
         @l.draw(x, y, 1)
+        x += 6
       when 'm'
         @m.draw(x, y, 1)
+        x += 6
       when 'n'
         @n.draw(x, y, 1)
+        x += 6
       when 'o'
         @o.draw(x, y, 1)
+        x += 6
       when 'p'
         @p.draw(x, y, 1)
+        x += 6
       when 'q'
         @q.draw(x, y, 1)
+        x += 7
       when 'r'
         @r.draw(x, y, 1)
+        x += 6
       when 's'
         @s.draw(x, y, 1)
+        x += 5
       when 't'
         @t.draw(x, y, 1)
+        x += 6
       when 'u'
         @u.draw(x, y, 1)
+        x += 6
       when 'v'
         @v.draw(x, y, 1)
+        x += 6
       when 'w'
         @w.draw(x, y, 1)
+        x += 6
       when 'x'
         @x.draw(x, y, 1)
+        x += 5
       when 'y'
         @y.draw(x, y, 1)
+        x += 6
       when 'z'
         @z.draw(x, y, 1)
+        x += 5
+      when ','
+        @comma.draw(x, y, 1)
+        x += 2
+      when '!'
+        @exclamation.draw(x, y, 1)
+        x += 2
+      when '.'
+        @dot.draw(x, y, 1)
+        x += 2
+      when '?'
+        @question.draw(x, y, 1)
+        x += 5
+      when "'", "’"
+        @apostrophe.draw(x, y, 1)
+        x += 2
+      when '"'
+        @quotes.draw(x, y, 1)
+        x += 4
+      when '~'
+        @tilde.draw(x, y, 1)
+        x += 7
+      when '-'
+        @hyphen.draw(x, y, 1)
+        x += 5
+      when '*'
+        @star.draw(x, y, 1)
+        x += 4
+      when '1'
+        @one.draw(x, y, 1)
+        x += 4
+      when '2'
+        @two.draw(x, y, 1)
+        x += 5
+      when '3' 
+        @three.draw(x, y, 1)
+        x += 5
+      when '4'
+        @four.draw(x, y, 1)
+        x += 5
+      when '5'
+        @five.draw(x, y, 1)
+        x += 5
+      when '6'
+        @six.draw(x, y, 1)
+        x += 5
+      when '7'
+        @seven.draw(x, y, 1)
+        x += 5
+      when '8'
+        @eight.draw(x, y, 1)
+        x += 5
+      when '9'
+        @nine.draw(x, y, 1)
+        x += 5
+      when '0'
+        @zero.draw(x, y, 1)
+        x += 5
+      when 'ö'
+        @two_dots.draw(x, y-2, 1)
+        @o.draw(x, y, 1)
+        x += 6
+      when 'í', 'Í'
+        @emphasis.draw(x, y-2, 1)
+        @i.draw(x, y, 1)
+        x += 4
+      when 'ú'
+        @emphasis.draw(x, y-2, 1)
+        @u.draw(x, y, 1)
+        x += 6
+      when 'ó'
+        @emphasis.draw(x+1, y-2, 1)
+        @o.draw(x, y, 1)
+        x += 6
+      when 'á'
+        @emphasis.draw(x, y-2, 1)
+        @a.draw(x, y, 1)
+        x += 6
+      when 'é'
+        @emphasis.draw(x, y-2, 1)
+        @e.draw(x, y, 1)
+        x += 6
+      when 'ð'
+        @mutated_d.draw(x, y, 1)
+        x += 7
+      when 'æ'
+        @ae.draw(x, y, 1)
+        x += 7
+      when '…'
+        @three_dots.draw(x, y, 1)
+        x += 6
+      when ':'
+        @colon.draw(x, y, 1)
+        x += 2
+      when ' '
+        x += 4
       end
-      x += 6
     end
   end
 
@@ -6425,6 +6552,7 @@ class Tamago < Gosu::Window
     @icons.draw(140, 5, 1) if !$start and $light and !$ending and !$dead
     @icons1.draw(140, 5, 1) if !$start and !$light
     $player.draw if !$start and !$feed and !$play and $rpsls == 0 and !$ending
+
     #@font.draw($talk, 10, 157, 1, 1.0, 1.0, Gosu::Color::WHITE)
     #@font.draw($talk1, 10, 169, 1, 1.0, 1.0, Gosu::Color::WHITE)
     #@font.draw($talk2, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE)
@@ -6440,26 +6568,32 @@ class Tamago < Gosu::Window
 
     #@font.draw($readytotalk, 60, 5, 1, 1.0, 1.0, Gosu::Color::BLUE)
     #@font.draw($talkrand, 60, 13, 1, 1.0, 1.0, Gosu::Color::BLUE)
-    bitmap($talk, 10, 158) if $talk != nil
-    bitmap($talk1, 10, 170) if $talk1 != nil
-    bitmap($talk2, 10, 182) if $talk2 != nil
-    bitmap($talk3, 10, 194) if $talk3 != nil
+
+    bitmap($talk, 10, 160) if $talk != nil
+    bitmap($talk1, 10, 172) if $talk1 != nil
+    bitmap($talk2, 10, 184) if $talk2 != nil
+    bitmap($talk3, 10, 196) if $talk3 != nil
 
     @font.draw($name_display, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK) if $light
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$light
     @action.draw if !$ending and !$dead
+
     @letter.draw(64, 27, 1) if $ending and $id != 5 and $id != 4 and !$opened_letter
     @letter1.draw(64, 27, 1) if $ending and $id != 5 and $id != 4 and $opened_letter
     @sparkles.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 < 50
     @sparkles1.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 >= 50 and $lifecounter % 200 < 100
     @sparkles2.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 >= 100 and $lifecounter % 200 < 150
     @sparkles3.draw(62, 34, 1) if $ending and ($id == 5 or $id == 4) and $lifecounter % 200 >= 150
+
     @pet.draw if $start
     $foods.draw if $feed
     $playing.draw if $play
     $minigame.draw if $rpsls > 0
     @talk.draw if ($id == 2 and $dialogue == 6) or $talkstate == 1
+
+    @glitchy.draw(10, 156, 1) if $image_to_text == 1
+    @glitchy2.draw(110, 157, 1) if $image_to_text == 3
   end
 end
 
