@@ -38,7 +38,7 @@ class Pet
   $maybreak = 0
   $respect = 0
   $response = false
-  $dialogue = 19
+  $dialogue = 16
  end
  
  def draw
@@ -886,7 +886,8 @@ class Action
       $state = 17
       $talk = "I can't..."
     end
-    $talk = "Dn͜t..ę̴̛ed..͝o͘od..." if $id == 4
+    #$talk = "Dn͜t..ę̴̛ed..͝o͘od..." if $id == 4
+    $image_to_text = 9 if $id == 4
     $move = false
    elsif $light and !$asleep and !$sick
     if $id == 4
@@ -1240,9 +1241,10 @@ class Action
   $sleepdeprivation = false
  end
 
- if $lifecounter == $wait and $light and !$dream and $rpsls == 0
+ if $lifecounter == $wait and $light and !$dream and $rpsls == 0 and !$conversation
  $cure = false 
  $cantdo = false
+ $image_to_text = 0
  $move = true
  end
 
@@ -1296,7 +1298,8 @@ class Action
    elsif $sick and $sleepstate == 1
      $move = false
      $talk = "..." if $id != 4
-     $talk = "Pls̷̢̨͟e dt trn..lg̢͟͝ht ofzz҉.̕͡.." if $id == 4
+     #$talk = "Pls̷̢̨͟e dt trn..lg̢͟͝ht ofzz҉.̕͡.." if $id == 4
+     $image_to_text = 6 if $id == 4
      $state = 6 if $id == 3
     end
   end
@@ -1309,7 +1312,8 @@ class Action
     $light = true
     $sleepstate = nil
     $talk = "Sorry, I need to charge." if !$sick
-    $talk = "O ͡wy͟...҉ ͟e ed..rrge̷.͢..҉" if $sick
+    #$talk = "O ͡wy͟...҉ ͟e ed..rrge̷.͢..҉" if $sick
+    $image_to_text = 8 if $sick
     $hungry -= 1 if !$sick
   end
 
@@ -1318,6 +1322,7 @@ if $sleepstate == 1 and $lifecounter == $wait and !$light
   $talk = nil
   $talk1 = nil
   $talk2 = nil
+  $image_to_text = 0
   $move = true
   $muchvariable = false
   $sleepstate = nil if $id == 3 or $id == 4
@@ -1393,7 +1398,8 @@ end
      $state = 17
      $talk = "I feel bad..."
    end
-   $talk = "Zzz̴̴r̛ry..cnnt̷҉͡.̀.ow..." if $id == 4
+   #$talk = "Zzz̴̴r̛ry..nnt̷҉͡.̀.ow..." if $id == 4
+   $image_to_text = 5 if $id == 4
    $move = false
   elsif $light and !$asleep and !$sick
    $sleepdeprivation = false
@@ -1594,6 +1600,7 @@ if $rpsls == 6 and $lifecounter == $wait
     $talk1 = nil
     $hug = false
     $autolight = false
+    $image_to_text = 0
   end
 
  if $autoexit == $lifecounter
@@ -1768,7 +1775,6 @@ end
 
 class Talks
  def initialize
-   @var = 0
    $talk = nil
    $talk1 = nil
    $talk2 = nil
@@ -1797,7 +1803,6 @@ class Talks
  end
 
  def update
-   @var += 1 if $lifecounter % 100 == 1
    if $start
     $talk = "Dog" if $cursor == 4
     $talk = "???" if $cursor == 5
@@ -1806,7 +1811,7 @@ class Talks
     $talk = "Robot" if $cursor == 8
     $talk = "Ghost" if $cursor == 9
    end
-   $talk = "#{@var}" if @var > 0 and !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation and !$autolight
+   $talk = nil if !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation and !$autolight and !$broken_deer
    $talk1 = nil if !$cure and !$feed and !$hug and !$dream and $rpsls == 0 and $light and !$play and !$conversation
    $talk2 = nil if !$feed and !$dream and $rpsls == 0 and $light and !$conversation
    $talk3 = nil if !$dream and $rpsls == 0 and !$conversation
@@ -1845,7 +1850,6 @@ class Talks
 
    if (Gosu.button_down? Gosu::KB_T or $readytotalk) and !@pressed2 and $talkdelay <= $lifecounter and $move and !$play and !$sing and $rpsls == 0 and !$feed and !$dead and !$start and not ($id == 3 and $light and $sleepy > 4) and !$dream and !$asleep and not ($id == 4 and $sad > 4 and $light) and not ($id != 3 and !$light and $sleepy > 4) and !$conversation and $maybreak == 0 and !$sleepdeprivation and $sleepstate != 4 and !$sneeze
      $call.play unless ($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2
-     $readytotalk = false
      $light = true
      $sleepstate = nil
      $conversation = true
@@ -1909,6 +1913,7 @@ class Talks
     $move = true
     $negative_talk = 0
     $negative_incrementation += 1 if $id != 4 and $id != 5
+    $readytotalk = false
     $talkrand = $lifecounter + rand(550..1000)
    end
 
@@ -1931,6 +1936,7 @@ class Talks
     $conversation = false
     $move = true
     $negative_talk = 0
+    $readytotalk = false
     $talkrand = $lifecounter + rand(550..1000)
    end
 
@@ -2070,7 +2076,8 @@ class Talks
           $talk = "Don't get close to me, I'm"
           $talk1 = "infected."
           end
-          $talk = "Pzzz..ee͢..o͜o̸t...͏̵̛" if $id == 4
+          #$talk = "Pzzz..ee͢..o͜o̸t...͏̵̛" if $id == 4
+          $image_to_text = 7 if $id == 4
         end
        $d_number = 1
     	elsif !$ending and $negative_talk == 0
@@ -5110,13 +5117,16 @@ class Talks
             if $d_number == 4 and $lifecounter == $wait
               $wait = $lifecounter + 40
               $state = 22
-              $talk2 = "and horns... and I don’t e̛v̡e͘͝n̶̡̨.҉..̴̡"
+              #$talk2 = "and horns... and I don’t e̛v̡e͘͝n̶̡̨.҉..̴̡"
+              $talk2 = "and horns... and I don’t"
+              $image_to_text = 2
               $d_number = 5
             end
 
             if $d_number == 5 and $lifecounter == $wait
               $endoftalk = $lifecounter + 200
               $state = 14
+              $image_to_text = 0
               $talk = ". . ."
               $talk1 = "Owww, sorry . . ."
               $sad += 1
@@ -5192,7 +5202,8 @@ class Talks
             end
           when 20
             if $d_number == 0
-              $talk = "I’̸͡͠M͘͘ ̀S͘CA̕͡R҉͏E͢D͏"
+              #$talk = "I’̸͡͠M͘͘ ̀S͘CA̕͡R҉͏E͢D͏"
+              $image_to_text = 4
             end
           end
         when 5
@@ -5623,7 +5634,7 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 16
-              $talk = "Please press ‘R’ to reboot me "
+              $talk = "Please press 'R' to reboot me "
               $talk1 = "in case I freeze."
               $talk2 = nil
               $d_number = 2
@@ -6269,6 +6280,8 @@ class Stats
 
    if $waitsneeze == $lifecounter and $sneeze
     $sneeze = false
+    $state = 4 if $sleepy >= 5
+    $state = 7 if $sleepy < 5
     $talkdelay = $lifecounter + 200
     $move = true
    end
@@ -6317,6 +6330,7 @@ class Stats
     $move = false
     $rpsls = 0
     $feed = false
+    $image_to_text = 0
     $tunestop = true if $sing
     $sing = false
     $play = false
@@ -6336,7 +6350,6 @@ class Tamago < Gosu::Window
     super 200, 220
     self.caption = "Tamagotchi"
     @font = Gosu::Font.new(self, "vis/pixel.ttf", 14)
-    #@font = Gosu::Font.new(self, "vis/Minecraftia-Regular.ttf", 20)
     @background_image = Gosu::Image.new("vis/back.png", :tileable => true)
     @background_image1 = Gosu::Image.new("vis/back1.png", :tileable => true)
     @stats = Stats.new
@@ -6593,7 +6606,14 @@ class Tamago < Gosu::Window
     @talk.draw if ($id == 2 and $dialogue == 6) or $talkstate == 1
 
     @glitchy.draw(10, 156, 1) if $image_to_text == 1
+    @glitchy1.draw(132, 181, 1) if $image_to_text == 2
     @glitchy2.draw(110, 157, 1) if $image_to_text == 3
+    @glitchy3.draw(10, 155, 1) if $image_to_text == 4
+    @glitchy4.draw(10, 155, 1) if $image_to_text == 5
+    @glitchy5.draw(10, 157, 1) if $image_to_text == 6
+    @glitchy6.draw(10, 160, 1) if $image_to_text == 7
+    @glitchy7.draw(10, 157, 1) if $image_to_text == 8
+    @glitchy8.draw(10, 157, 1) if $image_to_text == 9
   end
 end
 
