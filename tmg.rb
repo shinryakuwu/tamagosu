@@ -38,7 +38,7 @@ class Pet
   $maybreak = 0
   $respect = 0
   $response = false
-  $dialogue = 16
+  $dialogue = 17
  end
  
  def draw
@@ -1811,7 +1811,7 @@ class Talks
     $talk = "Robot" if $cursor == 8
     $talk = "Ghost" if $cursor == 9
    end
-   $talk = nil if !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation and !$autolight and !$broken_deer
+   $talk = nil if !$start and !$feed and !$cure and !$cantdo and $light and !$play and !$hug and !$dream and $rpsls == 0 and !$conversation and !$autolight and !$broken_deer
    $talk1 = nil if !$cure and !$feed and !$hug and !$dream and $rpsls == 0 and $light and !$play and !$conversation
    $talk2 = nil if !$feed and !$dream and $rpsls == 0 and $light and !$conversation
    $talk3 = nil if !$dream and $rpsls == 0 and !$conversation
@@ -1984,8 +1984,8 @@ class Talks
         if $id == 0
           if !$response or $respect < 0
             $talk = '"Goodbye..."'
-            $talk1 = "Press ESC and go do heroic"
-            $talk2 = "stuff."
+            $talk1 = nil
+            $talk2 = "Press ESC and go do heroic stuff."
           elsif $respect == 0
             $talk = '"Thank you for your  time.'
             $talk1 = "It was nice  to meet you."
@@ -1993,9 +1993,8 @@ class Talks
             $talk3 = "Press ESC to leave."
           elsif $respect > 0
             $talk = '"Thank you for existing! '
-            $talk1 = "I hope we will meet again"
-            $talk2 = 'someday."'
-            $talk3 = "Press ESC to go to reality."
+            $talk1 = 'I hope we will meet again someday."'
+            $talk2 = "Press ESC to go to reality."
           end
         elsif $id == 1
           if !$response or $respect < 0
@@ -2021,8 +2020,8 @@ class Talks
       end
     when 4
       $talk = "Goodbye, organism!  Take care!"
-      $talk1 = "Press ESC if it’s impossible"
-      $talk2 = "to  manipulate you."
+      $talk1 = "Press ESC if it’s impossible to "
+      $talk2 = "manipulate you."
     when 5
       $talk = "The ghost disappeared into"
       $talk1 = "thin air."
@@ -2097,8 +2096,8 @@ class Talks
     				if $d_number == 1 and $lifecounter == $wait
     					$wait = $lifecounter + 350
               $state = 11
-	    				$talk = "You don’t have to be always"
-	    				$talk1 = "near. I bet you are very busy."
+	    				$talk = "You don’t have to be always near."
+	    				$talk1 = "I bet you are very busy."
 	    				$talk2 = nil
 	    				$d_number = 2
 	    			end
@@ -2114,8 +2113,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 550
               $state = 18
-              $talk = "By the way… I didn’t mean I"
-              $talk1 = "don’t want you to be near…"
+              $talk = "By the way… I didn’t mean I don’t"
+              $talk1 = "want you to be near…"
               $talk2 = "Sorry, I’m not a good talker…"
               $talk3 = "I’m shy…"
               $d_number = 1
@@ -2125,16 +2124,15 @@ class Talks
               $endoftalk = $lifecounter + 450
               $state = 12
               $talk = "Anyways, thank you for your"
-              $talk1 = "company. I really appreciate"
-              $talk2 = "you being around."
+              $talk1 = "company. I really appreciate you"
+              $talk2 = "being around."
               $talk3 = nil
             end
           when 2
             if $d_number == 0
               $wait = $lifecounter + 350
               $state = 13
-              $talk = "One day a plant grew on"
-              $talk1 = "my head."
+              $talk = "One day a plant grew on my head."
               $d_number = 1
             end
 
@@ -2152,7 +2150,7 @@ class Talks
               $state = 18
               $talk = "I hadn’t got a name before it"
               $talk1 = "appeared. Everyone just called"
-              $talk2 = "me ‘a dog’."
+              $talk2 = "me 'a dog'."
               $d_number = 3
             end
 
@@ -2213,9 +2211,9 @@ class Talks
               $wait = $lifecounter + 600
               $state = 11
               $talk = "What do you think?"
-              $talk1 = "I could ask you something,"
-              $talk2 = "and you would press 'Y' or"
-              $talk3 = "'N' buttons in response."
+              $talk1 = "I could ask you something, and you"
+              $talk2 = "would press 'Y' or 'N' buttons in"
+              $talk3 = "response."
               $d_number = 2
             end
 
@@ -2223,8 +2221,8 @@ class Talks
               $wait = $lifecounter + 450
               $state = 14
               $talk = "I understand that it's far from"
-              $talk1 = "real talks. But still it would"
-              $talk2 = "be so nice..."
+              $talk1 = "real talks. But still it would be"
+              $talk2 = "so nice..."
               $talk3 = nil
               $d_number = 3
             end
@@ -2329,8 +2327,8 @@ class Talks
               $wait = $lifecounter + 450
               $state = 13
               $talk = "I actually love fairytales with"
-              $talk1 = "all my heart. I read a lot"
-              $talk2 = "of them when I was a kid."
+              $talk1 = "all my heart. I read a lot of them"
+              $talk2 = "when I was a kid."
               $d_number = 4
             end
 
@@ -2429,8 +2427,8 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 14
-              $talk = "I believe in monsters! One of"
-              $talk1 = "them surely lives under my bed!"
+              $talk = "I believe in monsters! One of them"
+              $talk1 = "surely lives under my bed!"
               $d_number = 2
             end
 
@@ -2525,8 +2523,8 @@ class Talks
               $endoftalk = $lifecounter + 500
               $state = 14
               $talk = "He started yelling and  I didn't"
-              $talk1 = "know what to do.  I hope it"
-              $talk2 = "never happens  again."
+              $talk1 = "know what to do.  I hope it never"
+              $talk2 = "happens  again."
               $sad += 1
             end
           when 10
@@ -2559,8 +2557,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 11
-              $talk = "One day I met a wise  and huge"
-              $talk1 = "and old  fluffy doggo."
+              $talk = "One day I met a wise  and huge and"
+              $talk1 = "old  fluffy doggo."
               $d_number = 1
             end
 
@@ -2568,8 +2566,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 13
               $talk = "“There is no lava  on the floor."
-              $talk1 = "You can  stand wherever you "
-              $talk2 = "want”, he said."
+              $talk1 = "You can  stand wherever you  want”,"
+              $talk2 = "he said."
               $d_number = 2
             end
 
@@ -2603,9 +2601,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 450
               $state = 18
-              $talk = "Strangely, adults are  the"
-              $talk1 = "ones who taught me  reading"
-              $talk2 = "fairytales."
+              $talk = "Strangely, adults are  the ones"
+              $talk1 = "who taught me  reading fairytales."
               $d_number = 1
             end
             
@@ -2613,8 +2610,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 13
               $talk = "Not long ago I was  just looking"
-              $talk1 = "at the  pictures imagining my "
-              $talk2 = "own stories."
+              $talk1 = "at the  pictures imagining my  own"
+              $talk2 = "stories."
               $d_number = 2
             end
 
@@ -2630,8 +2627,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 11
               $talk = "I once read a book  which ended"
-              $talk1 = "with kids  eating some magic"
-              $talk2 = "pills  in order to never grow up."
+              $talk1 = "with kids  eating some magic pills "
+              $talk2 = "in order to never grow up."
               $d_number = 1
             end
 
@@ -2656,24 +2653,24 @@ class Talks
               $endoftalk = $lifecounter + 500
               $state = 11
               $talk = "I have 38 cents and  two awesome"
-              $talk1 = "stickers  with cars. They are"
-              $talk2 = "rare,  I can tell you!"
+              $talk1 = "stickers  with cars. They are rare, "
+              $talk2 = "I can tell you!"
             end
           when 15
             if $respect >= 0 and $response
               if $d_number == 0
                 $wait = $lifecounter + 400
                 $state = 14
-                $talk = "I'm sorry... I told you  before"
-                $talk1 = "that I'm not  a good talker."
+                $talk = "I'm sorry... I told you  before that"
+                $talk1 = "I'm not  a good talker."
                 $d_number = 1
               end
 
               if $d_number == 1 and $lifecounter == $wait
                 $wait = $lifecounter + 300
                 $state = 14
-                $talk = "But I end up talking  pretty"
-                $talk1 = "much..."
+                $talk = "But I end up talking  pretty much..."
+                $talk1 = nil
                 $d_number = 2
               end
 
@@ -2697,8 +2694,8 @@ class Talks
                 $wait = $lifecounter + 450
                 $state = 14
                 $talk = "You never ever answered... "
-                $talk1 = "It's nothing, maybe your "
-                $talk2 = "keyboard is broken."
+                $talk1 = "It's nothing, maybe your  keyboard"
+                $talk2 = "is broken."
                 $d_number = 1
               end
 
@@ -2732,8 +2729,8 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $endoftalk = $lifecounter + 500
               $state = 14
-              $talk = "I didn't know it was  alright"
-              $talk1 = "for teeth to tear  off."
+              $talk = "I didn't know it was  alright for"
+              $talk1 = "teeth to tear  off."
               $talk2 = "It worries me still."
               $sad += 1
             end
@@ -2790,8 +2787,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 14
               $talk = "I have to tell you something."
-              $talk1 = "I hope you  hear me, it's"
-              $talk2 = "important, really."
+              $talk1 = "I hope you  hear me, it's important,"
+              $talk2 = "really."
               $d_number = 1
             end
 
@@ -2806,9 +2803,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 450
               $state = 11
-              $talk = "There is one more  thing wise"
-              $talk1 = "huge old fluffy doggo said"
-              $talk2 = "to me."
+              $talk = "There is one more  thing the wise"
+              $talk1 = "huge old fluffy doggo said to me."
               $d_number = 1
             end
 
@@ -2817,7 +2813,6 @@ class Talks
               $state = 13
               $talk = "“Never fear. Never worry. "
               $talk1 = "It's the best you can do.”"
-              $talk2 = nil
               $d_number = 2
             end
 
@@ -2845,8 +2840,8 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 10
-              $talk = "No need to look  after me,"
-              $talk1 = "really! Just  give me foods plz."
+              $talk = "No need to look  after me, really!"
+              $talk1 = "Just  give me foods plz."
               $talk2 = nil
               $d_number = 2
             end
@@ -2959,8 +2954,8 @@ class Talks
             if $d_number == 7 and $lifecounter == $wait
               $endoftalk = $lifecounter + 400
               $state = 14
-              $talk = "People are so hard  to"
-              $talk1 = "communicate with!"
+              $talk = "People are so hard  to communicate"
+              $talk1 = "with!"
               $d_number = 8
             end
 
@@ -3011,8 +3006,7 @@ class Talks
                 $endoftalk = $lifecounter + 400
                 $state = 12
                 $talk = "Yo killa! Don't worry,  I'll keep"
-                $talk1 = "it secret!  You get my cat"
-                $talk2 = "promise!"
+                $talk1 = "it secret!  You get my cat promise!"
                 $respect += 1
                 $response = true
                 negativetalk_decrementation
@@ -3050,8 +3044,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 12
-              $talk = "Oh, don't think  that I'm"
-              $talk1 = "interested in  death..."
+              $talk = "Oh, don't think  that I'm interested"
+              $talk1 = "in  death..."
               $d_number = 1
             end
 
@@ -3089,8 +3083,8 @@ class Talks
             if $d_number == 5 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 10
-              $talk = "What I desire the  most is to"
-              $talk1 = "poke a  real shark someday!"
+              $talk = "What I desire the  most is to poke"
+              $talk1 = "a  real shark someday!"
               $talk2 = nil
               $d_number = 6
             end
@@ -3099,8 +3093,8 @@ class Talks
               $wait = $lifecounter + 450
               $state = 10
               $talk = "Sharks are sooooo  dope!"
-              $talk1 = "Did you know  that they swim"
-              $talk2 = "even  when they sleep?"
+              $talk1 = "Did you know  that they swim even "
+              $talk2 = "when they sleep?"
               $d_number = 7
             end
 
@@ -3135,9 +3129,8 @@ class Talks
               if $d_number == 0
               $wait = $lifecounter + 400
               $state = 10
-              $talk = "I have a very important"
-              $talk1 = "question to ask!!  Do you like..."
-              $talk2 = "VIDEOGAMES?!"
+              $talk = "I have a very important question"
+              $talk1 = "to ask!!  Do you like... VIDEOGAMES?!"
               $d_number = 1
             end
 
@@ -3189,7 +3182,7 @@ class Talks
 
             if $d_number == 7 and $lifecounter == $wait
               $wait = $lifecounter + 80
-              $state = 10
+              $state = 19
               $talk = "...3!"
               $smash_count = 0
               $smash_text = ''
@@ -3255,8 +3248,8 @@ class Talks
               $wait = $lifecounter + 450
               $state = 11
               $talk = "I still haven't decided  which"
-              $talk1 = "one of 9999 games  I like the"
-              $talk2 = "most though..."
+              $talk1 = "one of 9999 games  I like the most"
+              $talk2 = "though..."
               $d_number = 2
             end
 
@@ -3288,8 +3281,8 @@ class Talks
                 $wait = $lifecounter + 500
                 $state = 13
                 $talk = "Then you probably  know that it's "
-                $talk1 = "a disappointing biz cuz you"
-                $talk2 = "build less than  you destroy."
+                $talk1 = "a disappointing biz cuz you build"
+                $talk2 = "less than  you destroy."
                 $response = true
                 $d_number = 3
               end
@@ -3303,8 +3296,8 @@ class Talks
             if $d_number == 3 and $lifecounter == $wait
               $endoftalk = $lifecounter + 250
               $state = 10
-              $talk = "Well, unless you like  to"
-              $talk1 = "DESTROY!"
+              $talk = "Well, unless you like  to DESTROY!"
+              $talk1 = nil
               $talk2 = nil
               $d_number = 4
             end
@@ -3328,8 +3321,8 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 500
               $state = 13
-              $talk = "But there's only one  game I"
-              $talk1 = "know. It's called  'janitor'."
+              $talk = "But there's only one  game I know."
+              $talk1 = "It's called  'janitor'."
               $talk2 = "The rules  are quite simple."
               $d_number = 2
             end
@@ -3346,8 +3339,7 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 300
               $state = 11
-              $talk = "I wanna learn how  to play"
-              $talk1 = "poker!"
+              $talk = "I wanna learn how  to play poker!"
               $d_number = 1
             end
 
@@ -3398,8 +3390,8 @@ class Talks
               $wait = $lifecounter + 400
               $state = 13
               $talk = "The biggest advantage  of being"
-              $talk1 = "a cat is that  you have beans"
-              $talk2 = "on  your paws."
+              $talk1 = "a cat is that  you have beans on "
+              $talk2 = "your paws."
               $d_number = 1
             end
 
@@ -3407,8 +3399,8 @@ class Talks
               $wait = $lifecounter + 400
               $state = 11
               $talk = "And you always fall  on them."
-              $talk1 = "If I didn't,  I would lose few"
-              $talk2 = "lives."
+              $talk1 = "If I didn't,  I would lose few lives."
+              $talk2 = nil
               $d_number = 2
             end
 
@@ -3417,7 +3409,6 @@ class Talks
               $state = 13
               $talk = "Another me would  poke me with"
               $talk1 = "a stick."
-              $talk2 = nil
             end
           when 13
             if $d_number == 0
@@ -3440,8 +3431,8 @@ class Talks
             if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 14
-              $talk = "When I meet those,  I rather"
-              $talk1 = "want to punch  them and leave."
+              $talk = "When I meet those,  I rather want"
+              $talk1 = "to punch  them and leave."
               $talk2 = nil
               $talk3 = nil
               $d_number = 3
@@ -3459,17 +3450,17 @@ class Talks
               $wait = $lifecounter + 500
               $state = 20
               $talk = "I had a friend once.  I thought"
-              $talk1 = "I had.  One little tiger"
-              $talk2 = "pretended  to be my friend."
+              $talk1 = "I had.  One little tiger pretended "
+              $talk2 = "to be my friend."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 500
               $state = 14
-              $talk = "But she just laughed  behind"
-              $talk1 = "my back spreading  my secrets"
-              $talk2 = "and calling  me stupid!"
+              $talk = "But she just laughed  behind my"
+              $talk1 = "back spreading  my secrets and"
+              $talk2 = "calling  me stupid!"
               $d_number = 2
             end
 
@@ -3654,7 +3645,7 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
-              $wait = $lifecounter + 250
+              $wait = $lifecounter + 260
               $state = 15
               $talk = "Do you mind my  company,"
               $talk1 = "earthling?"
@@ -3664,9 +3655,9 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 500
               $state = 13
-              $talk = "I'm from Ísdalur.  It's far"
-              $talk1 = "away from here,  in another"
-              $talk2 = "planetary  system."
+              $talk = "I'm from Ísdalur.  It's far away"
+              $talk1 = "from here,  in another planetary"
+              $talk2 = "system."
               $d_number = 2
             end
 
@@ -3682,18 +3673,17 @@ class Talks
             if $d_number == 3 and $lifecounter == $wait
               $endoftalk = $lifecounter + 500
               $state = 14
-              $talk = "I will just stay here  for a"
-              $talk1 = "while. But, please, hear me "
-              $talk2 = "if I call you."
+              $talk = "I will just stay here  for a while."
+              $talk1 = "But please hear me  if I call you."
+              $talk2 = nil
               $d_number = 4
             end
           when 1
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 12
-              $talk = "By the way, my name  is"
-              $talk1 = "Stjörnuryk.  You don't have"
-              $talk2 = "to  remember."
+              $talk = "By the way, my name  is Stjörnuryk. "
+              $talk1 = "You don't have to  remember."
               $d_number = 1
             end
 
@@ -3702,7 +3692,6 @@ class Talks
               $state = 15
               $talk = "And what is yours?"
               $talk1 = nil
-              $talk2 = nil
               $d_number = 2
             end
 
@@ -3755,8 +3744,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 15
-              $talk = "It struck me to see that most"
-              $talk1 = "of  earthlings have  stereo-vision."
+              $talk = "It struck me to see that most of "
+              $talk1 = "earthlings have  stereo-vision."
               $d_number = 1
             end
 
@@ -3873,9 +3862,9 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 500
               $state = 14
-              $talk = "Honestly, I shouldn't be  on"
-              $talk1 = "Earth. Our teleporter  broke"
-              $talk2 = "and got me here  by mistake."
+              $talk = "Honestly, I shouldn't be  on Earth."
+              $talk1 = "Our teleporter  broke and got me"
+              $talk2 = "here  by mistake."
               $sad += 1
               $d_number = 1
             end
@@ -3883,10 +3872,9 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 550
               $state = 13
-              $talk = "I don't know if anyone  is"
-              $talk1 = "searching for me now  and if"
-              $talk2 = "I ever be able  to come back"
-              $talk3 = "home..."
+              $talk = "I don't know if anyone  is searching"
+              $talk1 = "for me now  and if I'll ever be"
+              $talk2 = "able  to come back home..."
               $sad += 1
               $d_number = 2
             end
@@ -3895,9 +3883,8 @@ class Talks
               $wait = $lifecounter + 600
               $state = 13
               $talk = "Earthlings haven't invented "
-              $talk1 = "teleporters yet. They are  way"
-              $talk2 = "too complicated  to build on"
-              $talk3 = "one's own."
+              $talk1 = "teleporters yet. They are  way too"
+              $talk2 = "complicated  to build on one's own."
               $sad += 1
               $d_number = 3
             end
@@ -4029,9 +4016,9 @@ class Talks
               if Gosu.button_down? Gosu::KB_N
                 $endoftalk = $lifecounter + 500
                 $state = 20
-                $talk = "This is the best thing  in"
-                $talk1 = "the world! I will  teleport"
-                $talk2 = "you some if  I ever come back!"
+                $talk = "This is the best thing  in the"
+                $talk1 = "world! I will  teleport you some"
+                $talk2 = "if  I ever come back!"
                 $response = true
                 $d_number = 3
               end
@@ -4074,9 +4061,9 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 450
               $state = 13
-              $talk = "It sounds quite  offbeat, we"
-              $talk1 = "don't have  such custom on our "
-              $talk2 = "planet."
+              $talk = "It sounds quite  offbeat, we don't"
+              $talk1 = "have  such custom on our  planet."
+              $talk2 = nil
               $d_number = 2
             end
 
@@ -4204,9 +4191,9 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 500
               $state = 13
-              $talk = "Earthlings would be  much"
-              $talk1 = "happier if the day  lasted for"
-              $talk2 = "about 36 hours on Earth."
+              $talk = "Earthlings would be  much happier"
+              $talk1 = "if the day  lasted for about"
+              $talk2 = "36 hours on Earth."
               $d_number = 1
             end
 
@@ -4231,8 +4218,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 13
               $talk = "We have pills for  happiness,"
-              $talk1 = "for joy, for anxiety, for"
-              $talk2 = "kindness, for courage..."
+              $talk1 = "for joy, for anxiety, for kindness,"
+              $talk2 = "for courage..."
               $d_number = 2
             end
 
@@ -4257,8 +4244,8 @@ class Talks
             if $d_number == 4 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 14
-              $talk = "I couldn't imagine my  life"
-              $talk1 = "without emotion  pills before."
+              $talk = "I couldn't imagine my  life without"
+              $talk1 = "emotion  pills before."
               $talk2 = nil
               $d_number = 5
             end
@@ -4275,17 +4262,17 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 14
-              $talk = "I realized one thing  not long"
-              $talk1 = "ago. I'm  afraid of entropy."
+              $talk = "I realized one thing  not long ago."
+              $talk1 = "I'm  afraid of entropy."
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 450
               $state = 14
-              $talk = "There is nowhere to  run from"
-              $talk1 = "it because it's  in everything"
-              $talk2 = "that exists."
+              $talk = "There is nowhere to  run from it"
+              $talk1 = "because it's  in everything that"
+              $talk2 = "exists."
               $d_number = 2
             end
 
@@ -4318,8 +4305,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 14
-              $talk = "If I never come back,  I think"
-              $talk1 = "I'll try to love  this planet."
+              $talk = "If I never come back,  I think I'll"
+              $talk1 = "try to love  this planet."
               $d_number = 1
             end
 
@@ -4352,8 +4339,8 @@ class Talks
             if $d_number == 2 and $lifecounter == $wait
               $endoftalk = $lifecounter + 300
               $state = 14
-              $talk = "We are just getting  out of time"
-              $talk1 = "..."
+              $talk = "We are just getting  out of time..."
+              $talk1 = nil
               $sad += 1
               $d_number = 3
             end
@@ -4426,9 +4413,9 @@ class Talks
               $wait = $lifecounter + 600
               $state = 16
               $talk = "It’s just... I just thought..."
-              $talk1 = "As far as we met...  I dunno"
-              $talk2 = "what to dream of now,  to move"
-              $talk3 = "on, you know..."
+              $talk1 = "As far as we met...  I dunno what to"
+              $talk2 = "dream of now,  to move on,"
+              $talk3 = "you know..."
               $d_number = 1
             end
 
@@ -4486,8 +4473,8 @@ class Talks
               $state = 13
               $talk = "Oh... Just, please, try pressing "
               $talk1 = "‘Y’ or ‘N’ which would stand for "
-              $talk2 = "‘yes’ or ‘no’... If you are OK"
-              $talk3 = "with  it, of course..."
+              $talk2 = "‘yes’ or ‘no’... If you are OK with  it,"
+              $talk3 = "of course..."
               $d_number = 3
             end
 
@@ -4676,8 +4663,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 12
               $talk = "I've finished the drawing!"
-              $talk1 = "I will give it to you, but "
-              $talk2 = "please don’t laugh..."
+              $talk1 = "I will give it to you, but  please"
+              $talk2 = "don’t laugh..."
               $d_number = 1
             end
 
@@ -4781,8 +4768,8 @@ class Talks
             if $d_number == 7 and $lifecounter == $wait
               $endoftalk = $lifecounter + 400
               $state = 14
-              $talk = "It’s the only thing they’ve"
-              $talk1 = "ever  told me, to be honest..."
+              $talk = "It’s the only thing they’ve ever "
+              $talk1 = "told me, to be honest..."
               $sad += 1
               $d_number = 8
             end
@@ -4823,9 +4810,8 @@ class Talks
             if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 450
               $state = 19
-              $talk = "It’s about a schoolgirl who"
-              $talk1 = "turns  into a magician to fight"
-              $talk2 = "EVIL!"
+              $talk = "It’s about a schoolgirl who turns "
+              $talk1 = "into a magician to fight EVIL!"
               $d_number = 2
             end
 
@@ -5039,8 +5025,8 @@ class Talks
               $endoftalk = $lifecounter + 600
               $state = 13
               $talk = "There are so many wonderful"
-              $talk1 = "things worth existing! Icy"
-              $talk2 = "poles, for example!  Or dry milk!"
+              $talk1 = "things worth existing! Icy poles,"
+              $talk2 = "for example!  Or dry milk!"
               $talk3 = "Or my warm Christmas sweater!"
               $d_number = 1
             end
@@ -5063,8 +5049,8 @@ class Talks
               $wait = $lifecounter + 600
               $state = 14
               $talk = "I’m getting out of time..."
-              $talk1 = "There is something very"
-              $talk2 = "important I need to ask..."
+              $talk1 = "There is something very important"
+              $talk2 = "I need to ask..."
               $talk3 = "Please don’t laugh..."
               $d_number = 1
             end
@@ -5073,8 +5059,8 @@ class Talks
               $wait = $lifecounter + 400
               $state = 14
               $talk = "Do you assume that we might..."
-              $talk1 = "be together... like... forever"
-              $talk2 = "ever?  Please tell me, please..."
+              $talk1 = "be together... like... forever ever? "
+              $talk2 = "Please tell me, please..."
               $talk3 = nil
               $d_number = 2
             end
@@ -5235,8 +5221,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 11
-              $talk = "Thank you for being here "
-              $talk1 = "wasting your time on me..."
+              $talk = "Thank you for being here  wasting"
+              $talk1 = "your time on me..."
               $d_number = 1
             end
 
@@ -5251,8 +5237,7 @@ class Talks
             if $d_number == 0
               $endoftalk = $lifecounter + 400
               $state = 11
-              $talk = "I don’t remember if I had a"
-              $talk1 = "name..."
+              $talk = "I don’t remember if I had a name..."
               $d_number = 1
             end
           when 5
@@ -5282,8 +5267,8 @@ class Talks
             if $d_number == 0
               $wait = $lifecounter + 400
               $state = 11
-              $talk = "Every problem in the world "
-              $talk1 = "seems to be resolvable..."
+              $talk = "Every problem in the world  seems"
+              $talk1 = "to be resolvable..."
               $d_number = 1
             end
 
@@ -5350,8 +5335,7 @@ class Talks
             if $d_number == 0
               $endoftalk = $lifecounter + 350
               $state = 11
-              $talk = "It would be nice to be  an"
-              $talk1 = "alpaca..."
+              $talk = "It would be nice to be  an alpaca..."
               $d_number = 1
             end
           when 14
@@ -5392,8 +5376,8 @@ class Talks
               $wait = $lifecounter + 500
               $state = 11
               $talk = "Since I can’t own  anything"
-              $talk1 = "physical, it would be really"
-              $talk2 = "nice  to at least have a name..."
+              $talk1 = "physical, it would be really nice "
+              $talk2 = "to at least have a name..."
               $d_number = 2
             end
 
@@ -5586,8 +5570,8 @@ class Talks
               $wait = $lifecounter + 600
               $state = 11
               $talk = "I only remember that one day"
-              $talk1 = "I was washed ashore... And I"
-              $talk2 = "stayed there without moving..."
+              $talk1 = "I was washed ashore... And I stayed"
+              $talk2 = "there without moving..."
               $talk3 = "I don’t remember why..."
               $d_number = 4
             end
@@ -5605,8 +5589,7 @@ class Talks
             if $d_number == 5 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 11
-              $talk = "I suppose then I became a"
-              $talk1 = "ghost..."
+              $talk = "I suppose then I became a ghost..."
               $d_number = 6
             end
 
@@ -5688,19 +5671,19 @@ class Talks
 
             if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 30
-              $talk4 = "WHATEVER"
+              #$talk4 = "WHATEVER"
               $d_number = 3
             end
 
             if $d_number == 3 and $lifecounter == $wait
               $wait = $lifecounter + 30
-              $talk5 = "I"
+              #$talk5 = "I"
               $d_number = 4
             end
 
             if $d_number == 4 and $lifecounter == $wait
               $wait = $lifecounter + 200
-              $talk6 = "WANT"
+              #$talk6 = "WANT"
               $d_number = 5
             end
 
@@ -5710,9 +5693,9 @@ class Talks
               $talk = "So you can’t kill me."
               $talk1 = nil
               $talk2 = nil
-              $talk4 = nil
-              $talk5 = nil
-              $talk6 = nil
+              #$talk4 = nil
+              #$talk5 = nil
+              #$talk6 = nil
               $d_number = 6
             end
 
@@ -5727,17 +5710,17 @@ class Talks
             if $d_number == 7 and $lifecounter == $wait
               $endoftalk = $lifecounter + 400
               $state = 16
-              $talk = "Only organic organisms  cease"
-              $talk1 = "to exist like that."
+              $talk = "Only organic organisms  cease to"
+              $talk1 = "exist like that."
             end
           when 3
             if $d_number == 0
               $wait = $lifecounter + 650
               $state = 16
-              $talk = "Diving deeper into human "
-              $talk1 = "behavior analysis, we can come"
-              $talk2 = "to a  conclusion that humans can"
-              $talk3 = "make a game out of anything,"
+              $talk = "Diving deeper into human  behavior"
+              $talk1 = "analysis, we can come to a "
+              $talk2 = "conclusion that humans can make"
+              $talk3 = "a game out of anything,"
               $d_number = 1
             end
 
@@ -5771,10 +5754,9 @@ class Talks
             if $d_number == 0
               $endoftalk = $lifecounter + 600
               $state = 16
-              $talk = "It’s ok if you don’t bother"
-              $talk1 = "taking  care after me. I’m"
-              $talk2 = "solar-powered,  so I’ll be fine"
-              $talk3 = "by myself."
+              $talk = "It’s ok if you don’t bother taking "
+              $talk1 = "care of me. I’m solar-powered, "
+              $talk2 = "so I’ll be fine by myself."
               $d_number = 1
             end
           when 5
@@ -5790,9 +5772,9 @@ class Talks
 
             if $d_number == 1 and $lifecounter == $wait
               $endoftalk = $lifecounter + 500
-              $talk = "Also, here's a little hint for"
-              $talk1 = "you. Hold the '↑' button if you"
-              $talk2 = "don't keep up with the text."
+              $talk = "Also, here's a little hint for you."
+              $talk1 = "Hold the '↑' button if you don't"
+              $talk2 = "keep up with the text."
               $talk3 = nil
               $d_number = 2
             end
@@ -5850,8 +5832,8 @@ class Talks
             if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 500
               $talk = "I  cannot let myself beat anyone."
-              $talk1 = "You know, some humans get"
-              $talk2 = "really hurt by  losing in games."
+              $talk1 = "You know, some humans get really"
+              $talk2 = "hurt by  losing in games."
               $d_number = 3
             end
 
@@ -5866,8 +5848,8 @@ class Talks
             if $d_number == 4 and $lifecounter == $wait
               $endoftalk = $lifecounter + 250
               $state = 10
-              $talk = "Oh, disregard what I’ve just"
-              $talk1 = "said!"
+              $talk = "Oh, disregard what I’ve just said!"
+              $talk1 = nil
             end
           when 9
             if $d_number == 0
@@ -5875,8 +5857,7 @@ class Talks
               $state = 16
               $talk = "According to recent research,"
               $talk1 = "neural networks is the most"
-              $talk2 = "perspective field of"
-              $talk3 = "programming."
+              $talk2 = "perspective field of programming."
               $d_number = 1
             end
 
@@ -5885,7 +5866,6 @@ class Talks
               $talk = "It helps in creating actual"
               $talk1 = "artificial intelligence."
               $talk2 = nil
-              $talk3 = nil
             end
           when 10
             if $d_number == 0
@@ -5935,10 +5915,9 @@ class Talks
             if $d_number == 0
               $endoftalk = $lifecounter + 600
               $state = 16
-              $talk = "Statistics show that there's"
-              $talk1 = "no correlation between the"
-              $talk2 = "dolphins’ deaths and global"
-              $talk3 = "warming."
+              $talk = "Statistics show that there's no"
+              $talk1 = "correlation between the dolphins’"
+              $talk2 = "deaths and global warming."
               $d_number = 1
             end
           when 13
@@ -5947,8 +5926,8 @@ class Talks
               $state = 16
               $talk = "I’m just letting you know that "
               $talk1 = "I will go away soon. "
-              $talk2 = "You’re a nice company, but I"
-              $talk3 = "have  to move on."
+              $talk2 = "You’re a nice company, but I have "
+              $talk3 = "to move on."
               $d_number = 1
             end
           when 14
@@ -5965,17 +5944,16 @@ class Talks
               $endoftalk = $lifecounter + 400
               $state = 16
               $talk = "Statistics show that all the "
-              $talk1 = "humans who tried junk food"
-              $talk2 = "died."
+              $talk1 = "humans who tried junk food died."
               $d_number = 1
             end
           when 16
             if $d_number == 0
               $wait = $lifecounter + 500
               $state = 16
-              $talk = "It's so strange that the pets"
-              $talk1 = "are conscious but may still"
-              $talk2 = "die if you do not feed them."
+              $talk = "It's so strange that the pets are"
+              $talk1 = "conscious but may still die if"
+              $talk2 = "you do not feed them."
               $d_number = 1
             end
 
@@ -6356,9 +6334,11 @@ class Tamago < Gosu::Window
     @icons = Gosu::Image.new("vis/icons.png")
     @icons1 = Gosu::Image.new("vis/icons1.png")
     @letter, @letter1 = *Gosu::Image.load_tiles("vis/letter.png", 72, 81)
-    @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k, @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, @w, @x, @y, @z, @comma, @exclamation, @dot, @question, @apostrophe, @quotes, @tilde, @hyphen, @star, @one, @two, @three, @four, @five, @six, @seven, @eight, @nine, @zero, @two_dots, @emphasis, @mutated_d, @ae, @three_dots, @colon = *Gosu::Image.load_tiles("vis/font.png", 6, 7)
+    @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k, @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, @w, @x, @y, @z, @comma, @exclamation, @dot, @question, @apostrophe, @quotes, @tilde, @hyphen, @star, @one, @two, @three, @four, @five, @six, @seven, @eight, @nine, @zero, @two_dots, @emphasis, @mutated_d, @ae, @three_dots, @colon, @arrow, @arrow1 = *Gosu::Image.load_tiles("vis/font.png", 6, 7)
+    @a1, @b1, @c1, @d1, @e1, @f1, @g1, @h1, @i1, @j1, @k1, @l1, @m1, @n1, @o1, @p1, @q1, @r1, @s1, @t1, @u1, @v1, @w1, @x1, @y1, @z1, @apostrophe1, @bracket1, @bracket2 = *Gosu::Image.load_tiles("vis/font1.png", 6, 7)
     @sparkles, @sparkles1, @sparkles2, @sparkles3 = *Gosu::Image.load_tiles("vis/sparkles.png", 76, 88)
     @glitchy, @glitchy1, @glitchy2, @glitchy3, @glitchy4, @glitchy5, @glitchy6, @glitchy7, @glitchy8 = *Gosu::Image.load_tiles("vis/zalgo.png", 189, 13)
+    @wobot, @wobot1, @wobot2 = *Gosu::Image.load_tiles("vis/whateveriwant.png", 83, 15)
     @action = Action.new
     $lifecounter = 0
     $menucounter = 0
@@ -6366,183 +6346,283 @@ class Tamago < Gosu::Window
     @talk = Talks.new
   end
 
-  def bitmap(text, x, y)
+  def bitmap(text, x, y, color)
     letters = text.downcase.split(//)
     letters.each do |z|
-      case z
-      when 'a'
-        @a.draw(x, y, 1)
-        x += 6
-      when 'b'
-        @b.draw(x, y, 1)
-        x += 6
-      when 'c'
-        @c.draw(x, y, 1)
-        x += 6
-      when 'd'
-        @d.draw(x, y, 1)
-        x += 6
-      when 'e'
-        @e.draw(x, y, 1)
-        x += 6
-      when 'f'
-        @f.draw(x, y, 1)
-        x += 6
-      when 'g'
-        @g.draw(x, y, 1)
-        x += 6
-      when 'h'
-        @h.draw(x, y, 1)
-        x += 6
-      when 'i'
-        @i.draw(x, y, 1)
-        x += 4
-      when 'j'
-        @j.draw(x, y, 1)
-        x += 6
-      when 'k'
-        @k.draw(x, y, 1)
-        x += 6
-      when 'l'
-        @l.draw(x, y, 1)
-        x += 6
-      when 'm'
-        @m.draw(x, y, 1)
-        x += 6
-      when 'n'
-        @n.draw(x, y, 1)
-        x += 6
-      when 'o'
-        @o.draw(x, y, 1)
-        x += 6
-      when 'p'
-        @p.draw(x, y, 1)
-        x += 6
-      when 'q'
-        @q.draw(x, y, 1)
-        x += 7
-      when 'r'
-        @r.draw(x, y, 1)
-        x += 6
-      when 's'
-        @s.draw(x, y, 1)
-        x += 5
-      when 't'
-        @t.draw(x, y, 1)
-        x += 6
-      when 'u'
-        @u.draw(x, y, 1)
-        x += 6
-      when 'v'
-        @v.draw(x, y, 1)
-        x += 6
-      when 'w'
-        @w.draw(x, y, 1)
-        x += 6
-      when 'x'
-        @x.draw(x, y, 1)
-        x += 5
-      when 'y'
-        @y.draw(x, y, 1)
-        x += 6
-      when 'z'
-        @z.draw(x, y, 1)
-        x += 5
-      when ','
-        @comma.draw(x, y, 1)
-        x += 2
-      when '!'
-        @exclamation.draw(x, y, 1)
-        x += 2
-      when '.'
-        @dot.draw(x, y, 1)
-        x += 2
-      when '?'
-        @question.draw(x, y, 1)
-        x += 5
-      when "'", "’"
-        @apostrophe.draw(x, y, 1)
-        x += 2
-      when '"'
-        @quotes.draw(x, y, 1)
-        x += 4
-      when '~'
-        @tilde.draw(x, y, 1)
-        x += 7
-      when '-'
-        @hyphen.draw(x, y, 1)
-        x += 5
-      when '*'
-        @star.draw(x, y, 1)
-        x += 4
-      when '1'
-        @one.draw(x, y, 1)
-        x += 4
-      when '2'
-        @two.draw(x, y, 1)
-        x += 5
-      when '3' 
-        @three.draw(x, y, 1)
-        x += 5
-      when '4'
-        @four.draw(x, y, 1)
-        x += 5
-      when '5'
-        @five.draw(x, y, 1)
-        x += 5
-      when '6'
-        @six.draw(x, y, 1)
-        x += 5
-      when '7'
-        @seven.draw(x, y, 1)
-        x += 5
-      when '8'
-        @eight.draw(x, y, 1)
-        x += 5
-      when '9'
-        @nine.draw(x, y, 1)
-        x += 5
-      when '0'
-        @zero.draw(x, y, 1)
-        x += 5
-      when 'ö'
-        @two_dots.draw(x, y-2, 1)
-        @o.draw(x, y, 1)
-        x += 6
-      when 'í', 'Í'
-        @emphasis.draw(x, y-2, 1)
-        @i.draw(x, y, 1)
-        x += 4
-      when 'ú'
-        @emphasis.draw(x, y-2, 1)
-        @u.draw(x, y, 1)
-        x += 6
-      when 'ó'
-        @emphasis.draw(x+1, y-2, 1)
-        @o.draw(x, y, 1)
-        x += 6
-      when 'á'
-        @emphasis.draw(x, y-2, 1)
-        @a.draw(x, y, 1)
-        x += 6
-      when 'é'
-        @emphasis.draw(x, y-2, 1)
-        @e.draw(x, y, 1)
-        x += 6
-      when 'ð'
-        @mutated_d.draw(x, y, 1)
-        x += 7
-      when 'æ'
-        @ae.draw(x, y, 1)
-        x += 7
-      when '…'
-        @three_dots.draw(x, y, 1)
-        x += 6
-      when ':'
-        @colon.draw(x, y, 1)
-        x += 2
-      when ' '
-        x += 4
+      if color == 0
+        case z
+        when 'a'
+          @a.draw(x, y, 1)
+          x += 6
+        when 'b'
+          @b.draw(x, y, 1)
+          x += 6
+        when 'c'
+          @c.draw(x, y, 1)
+          x += 6
+        when 'd'
+          @d.draw(x, y, 1)
+          x += 6
+        when 'e'
+          @e.draw(x, y, 1)
+          x += 6
+        when 'f'
+          @f.draw(x, y, 1)
+          x += 6
+        when 'g'
+          @g.draw(x, y, 1)
+          x += 6
+        when 'h'
+          @h.draw(x, y, 1)
+          x += 6
+        when 'i'
+          @i.draw(x, y, 1)
+          x += 4
+        when 'j'
+          @j.draw(x, y, 1)
+          x += 6
+        when 'k'
+          @k.draw(x, y, 1)
+          x += 6
+        when 'l'
+          @l.draw(x, y, 1)
+          x += 6
+        when 'm'
+          @m.draw(x, y, 1)
+          x += 6
+        when 'n'
+          @n.draw(x, y, 1)
+          x += 6
+        when 'o'
+          @o.draw(x, y, 1)
+          x += 6
+        when 'p'
+          @p.draw(x, y, 1)
+          x += 6
+        when 'q'
+          @q.draw(x, y, 1)
+          x += 7
+        when 'r'
+          @r.draw(x, y, 1)
+          x += 6
+        when 's'
+          @s.draw(x, y, 1)
+          x += 5
+        when 't'
+          @t.draw(x, y, 1)
+          x += 6
+        when 'u'
+          @u.draw(x, y, 1)
+          x += 6
+        when 'v'
+          @v.draw(x, y, 1)
+          x += 6
+        when 'w'
+          @w.draw(x, y, 1)
+          x += 6
+        when 'x'
+          @x.draw(x, y, 1)
+          x += 5
+        when 'y'
+          @y.draw(x, y, 1)
+          x += 6
+        when 'z'
+          @z.draw(x, y, 1)
+          x += 5
+        when ','
+          @comma.draw(x, y, 1)
+          x += 2
+        when '!'
+          @exclamation.draw(x, y, 1)
+          x += 2
+        when '.'
+          @dot.draw(x, y, 1)
+          x += 2
+        when '?'
+          @question.draw(x, y, 1)
+          x += 5
+        when "'", "’", "‘"
+          @apostrophe.draw(x, y, 1)
+          x += 2
+        when '"', "“", "”"
+          @quotes.draw(x, y, 1)
+          x += 4
+        when '~'
+          @tilde.draw(x, y, 1)
+          x += 7
+        when '-'
+          @hyphen.draw(x, y, 1)
+          x += 5
+        when '*'
+          @star.draw(x, y, 1)
+          x += 4
+        when '1'
+          @one.draw(x, y, 1)
+          x += 4
+        when '2'
+          @two.draw(x, y, 1)
+          x += 5
+        when '3' 
+          @three.draw(x, y, 1)
+          x += 5
+        when '4'
+          @four.draw(x, y, 1)
+          x += 5
+        when '5'
+          @five.draw(x, y, 1)
+          x += 5
+        when '6'
+          @six.draw(x, y, 1)
+          x += 5
+        when '7'
+          @seven.draw(x, y, 1)
+          x += 5
+        when '8'
+          @eight.draw(x, y, 1)
+          x += 5
+        when '9'
+          @nine.draw(x, y, 1)
+          x += 5
+        when '0'
+          @zero.draw(x, y, 1)
+          x += 5
+        when 'ö'
+          @two_dots.draw(x, y-2, 1)
+          @o.draw(x, y, 1)
+          x += 6
+        when 'í', 'Í'
+          @emphasis.draw(x, y-2, 1)
+          @i.draw(x, y, 1)
+          x += 4
+        when 'ú'
+          @emphasis.draw(x, y-2, 1)
+          @u.draw(x, y, 1)
+          x += 6
+        when 'ó'
+          @emphasis.draw(x+1, y-2, 1)
+          @o.draw(x, y, 1)
+          x += 6
+        when 'á'
+          @emphasis.draw(x, y-2, 1)
+          @a.draw(x, y, 1)
+          x += 6
+        when 'é'
+          @emphasis.draw(x, y-2, 1)
+          @e.draw(x, y, 1)
+          x += 6
+        when 'ð'
+          @mutated_d.draw(x, y, 1)
+          x += 7
+        when 'æ'
+          @ae.draw(x, y, 1)
+          x += 7
+        when '…'
+          @three_dots.draw(x, y, 1)
+          x += 6
+        when ':'
+          @colon.draw(x, y, 1)
+          x += 2
+        when '↓'
+          @arrow.draw(x, y, 1)
+          x += 6
+        when '↑'
+          @arrow1.draw(x, y, 1)
+          x += 6
+        when ' '
+          x += 4
+        end
+      elsif color == 1
+        case z
+        when 'a'
+          @a1.draw(x, y, 1)
+          x += 6
+        when 'b'
+          @b1.draw(x, y, 1)
+          x += 6
+        when 'c'
+          @c1.draw(x, y, 1)
+          x += 6
+        when 'd'
+          @d1.draw(x, y, 1)
+          x += 6
+        when 'e'
+          @e1.draw(x, y, 1)
+          x += 6
+        when 'f'
+          @f1.draw(x, y, 1)
+          x += 6
+        when 'g'
+          @g1.draw(x, y, 1)
+          x += 6
+        when 'h'
+          @h1.draw(x, y, 1)
+          x += 6
+        when 'i'
+          @i1.draw(x, y, 1)
+          x += 4
+        when 'j'
+          @j1.draw(x, y, 1)
+          x += 6
+        when 'k'
+          @k1.draw(x, y, 1)
+          x += 6
+        when 'l'
+          @l1.draw(x, y, 1)
+          x += 6
+        when 'm'
+          @m1.draw(x, y, 1)
+          x += 6
+        when 'n'
+          @n1.draw(x, y, 1)
+          x += 6
+        when 'o'
+          @o1.draw(x, y, 1)
+          x += 6
+        when 'p'
+          @p1.draw(x, y, 1)
+          x += 6
+        when 'q'
+          @q1.draw(x, y, 1)
+          x += 7
+        when 'r'
+          @r1.draw(x, y, 1)
+          x += 6
+        when 's'
+          @s1.draw(x, y, 1)
+          x += 5
+        when 't'
+          @t1.draw(x, y, 1)
+          x += 6
+        when 'u'
+          @u1.draw(x, y, 1)
+          x += 6
+        when 'v'
+          @v1.draw(x, y, 1)
+          x += 6
+        when 'w'
+          @w1.draw(x, y, 1)
+          x += 6
+        when 'x'
+          @x1.draw(x, y, 1)
+          x += 5
+        when 'y'
+          @y1.draw(x, y, 1)
+          x += 6
+        when 'z'
+          @z1.draw(x, y, 1)
+          x += 5
+        when "'"
+          @apostrophe1.draw(x, y, 1)
+          x += 2
+        when '['
+          @bracket1.draw(x, y, 1)
+          x += 3
+        when ']' 
+          @bracket2.draw(x, y, 1)
+          x += 3
+        when ' '
+          x += 4
+        end
       end
     end
   end
@@ -6570,24 +6650,33 @@ class Tamago < Gosu::Window
     #@font.draw($talk1, 10, 169, 1, 1.0, 1.0, Gosu::Color::WHITE)
     #@font.draw($talk2, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE)
     #@font.draw($talk3, 10, 193, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    @font.draw($talk4, 14, 182, 1, 1.8, 1.8, Gosu::Color.argb(0xff_c975ff))
-    @font.draw($talk5, 108, 172, 1, 2.4, 2.4, Gosu::Color.argb(0xff_ffa7fa))
-    @font.draw($talk6, 130, 182, 1, 2.5, 2.5, Gosu::Color.argb(0xff_5cffe6))
-    @font.draw($tap, 10, 169, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
-    @font.draw($smash_text, 10, 181, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
-    @font.draw($give_a_name, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
-    @font.draw($enter_name, 10, 157, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
+    #@font.draw($talk4, 14, 182, 1, 1.8, 1.8, Gosu::Color.argb(0xff_c975ff))
+    #@font.draw($talk5, 108, 172, 1, 2.4, 2.4, Gosu::Color.argb(0xff_ffa7fa))
+    #@font.draw($talk6, 130, 182, 1, 2.5, 2.5, Gosu::Color.argb(0xff_5cffe6))
+    #@font.draw($tap, 10, 169, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
+    #@font.draw($smash_text, 10, 181, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
+    #@font.draw($give_a_name, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
+    #@font.draw($enter_name, 10, 157, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
+    #@font.draw($name_display, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
     @font.draw($lifecounter, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation and !$dead
 
-    #@font.draw($readytotalk, 60, 5, 1, 1.0, 1.0, Gosu::Color::BLUE)
     #@font.draw($talkrand, 60, 13, 1, 1.0, 1.0, Gosu::Color::BLUE)
 
-    bitmap($talk, 10, 160) if $talk != nil
-    bitmap($talk1, 10, 172) if $talk1 != nil
-    bitmap($talk2, 10, 184) if $talk2 != nil
-    bitmap($talk3, 10, 196) if $talk3 != nil
+    bitmap($talk, 10, 160, 0) if $talk != nil
+    bitmap($talk1, 10, 172, 0) if $talk1 != nil
+    bitmap($talk2, 10, 184, 0) if $talk2 != nil
+    bitmap($talk3, 10, 196, 0) if $talk3 != nil
 
-    @font.draw($name_display, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
+    bitmap($tap, 10, 172, 1) if $tap != nil and $dialogue == 6 and $id == 3
+    bitmap($smash_text, 10, 184, 1) if $smash_text != nil and $dialogue == 6 and $id == 3
+    bitmap($give_a_name, 10, 181, 1) if $give_a_name != nil and $dialogue == 16 and $id == 5
+    bitmap($enter_name, 10, 160, 1) if $enter_name != nil and $dialogue == 16 and $id == 5
+    bitmap($name_display, 10, 181, 1) if $name_display != nil and $dialogue == 16 and $id == 5
+
+    @wobot.draw(14, 188, 1) if $id == 4 and $dialogue == 2 and ($d_number == 3 or $d_number == 4 or $d_number == 5)
+    @wobot1.draw(108, 184, 1) if $id == 4 and $dialogue == 2 and ($d_number == 4 or $d_number == 5)
+    @wobot2.draw(130, 195, 1) if $id == 4 and $dialogue == 2 and $d_number == 5
+
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK) if $light
     #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$light
     @action.draw if !$ending and !$dead
