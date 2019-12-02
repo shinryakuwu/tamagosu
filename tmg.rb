@@ -38,7 +38,7 @@ class Pet
   $maybreak = 0
   $respect = 0
   $response = false
-  $dialogue = 17
+  $dialogue = 18
  end
  
  def draw
@@ -932,8 +932,7 @@ class Action
   when 0
     $talk = "I can't eat that much..."
   when 1
-    $talk = "Wait, I need time to digest it"
-    $talk1 = "all."
+    $talk = "Wait, I need time to digest it all."
   when 2
     $talk = "Thank you, but I'm not hungry"
     $talk1 = "anymore..."
@@ -1006,8 +1005,7 @@ class Action
      $wait = $lifecounter + 200
      $talk = "It tastes great!"
      when 1
-     $talk = "I really like this"
-     $talk1 = "substance."
+     $talk = "I really like this substance."
      when 2
      $talk = "Watery and lovely!"
      when 3
@@ -1047,9 +1045,8 @@ class Action
      $talk2 = "That sounds fair."
      when 1
      $wait = $lifecounter + 200
-     $talk = "Please don't get me wrong."
-     $talk1 = "But i doubt about its"
-     $talk2 = "origin."
+     $talk = "Please don't get me wrong,"
+     $talk1 = "but I doubt its origin."
      when 2
      $talk = "Eeh..."
      when 3
@@ -1066,8 +1063,8 @@ class Action
      $talk = "Mmmaybe later...?"
      when 1
      $wait = $lifecounter + 200
-     $talk = "Is it the product Earthligs"
-     $talk1 = "can't live without?"
+     $talk = "Is it the product Earthligs can't"
+     $talk1 = "live without?"
      when 2
      $talk = "Thanks much!"
      when 3
@@ -1165,8 +1162,7 @@ class Action
       $state = 14 if $id == 0 or $id == 1 or $id == 2
       $state = 16 if $id == 3
      elsif $state == 3
-      $talk = "I'd rather get something"
-      $talk1 = "to eat..."
+      $talk = "I'd rather get something to eat..."
       $state = 16 if $id == 0 or $id == 1
       $state = 14 if $id == 3 or $id == 2
      end
@@ -1272,8 +1268,7 @@ class Action
     elsif $id == 2
        $state = 14
        $talk = "I'm afraid of darkness..."
-       $talk1 = "Please stay with me for"
-       $talk2 = "a while..."
+       $talk1 = "Please stay with me for a while..."
     elsif $id == 1 or $id == 5
       if $sleepy < 5
        unless $sad > 4
@@ -1289,9 +1284,9 @@ class Action
        $state = 4
        $talk = "..." if $id == 1
        if $id == 5
-         $talk = "I sleep with my eyes"
-         $talk1 = "opened. I hope it doesn't"
-         $talk2 = "give you the creeps."
+         $talk = "I sleep with my eyes opened."
+         $talk1 = "I hope it doesn't give you"
+         $talk2 = "the creeps."
        end
       end
     end
@@ -1559,8 +1554,8 @@ if $rpsls == 6 and $lifecounter == $wait
   $talk = "Aww, it's so nice."
   when 1
     if $hugstate == 0
-      $talk = "Please don't do that. Our"
-      $talk1 = "race copulates like that."
+      $talk = "Please don't do that."
+      $talk1 = "Our race copulates like that."
       $hugstate = 2
     elsif $hugstate == 2
       $cantdo = true
@@ -2055,8 +2050,7 @@ class Talks
           $state = 16 if $id == 0 or $id == 1
           $state = 14 if $id == 2 or $id == 3
       		$talk = "I'm starving..."
-      		$talk1 = "Please give me something"
-          $talk2 = "to eat."
+      		$talk1 = "Please give me something to eat."
       	elsif $negative_talk == 3
   			  $endoftalk = $lifecounter + 300
           $state = 2
@@ -2072,8 +2066,7 @@ class Talks
           $state = 23 if $id == 2
           $talk = "I feel bad..." if $id != 4 and $id != 1
           if $id == 1
-          $talk = "Don't get close to me, I'm"
-          $talk1 = "infected."
+          $talk = "Don't get close to me, I'm infected."
           end
           #$talk = "Pzzz..ee͢..o͜o̸t...͏̵̛" if $id == 4
           $image_to_text = 7 if $id == 4
@@ -5972,7 +5965,7 @@ class Talks
 end
 
 class String
-  def wrap(col = 25)
+  def wrap(col = 33)
     gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/, "\\1\\3line")
   end
 end
@@ -6068,7 +6061,7 @@ class Stats
     @hearts1, @hearts2, @hearts3, @hearts4, @hearts5, @hearts11, @hearts12, @hearts13, @hearts14, @hearts15 = *Gosu::Image.load_tiles("vis/hearts.png", 39, 6)
     $sad = 1
     $hungry = 1
-    $sleepy = 0
+    $sleepy = 4
     $sick = false
   end
 
