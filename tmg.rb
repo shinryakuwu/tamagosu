@@ -5,6 +5,7 @@ require 'gosu'
 
 class Pet
   def initialize
+  $testmode = true
   $start = true
   $move = true
   $light = true
@@ -32,13 +33,17 @@ class Pet
   $negativetalk_incrementation = 0
   $image_to_text = 0
   $maydie = 0
-  $talkrand = $lifecounter + rand(550..1000)
-  #$readytotalk = true (remove the line above)
+  $talkrand = $lifecounter + rand(550..1000) if $testmode
+  $sneezerand = $lifecounter + rand(400..500) if $testmode
+  $sneezerand = $lifecounter + rand(8000..18000) if !$testmode
+  $sickrand = $lifecounter + rand(2000..3000) if $testmode
+  $sickrand = $lifecounter + rand(10000..20000) if !$testmode
+  $readytotalk = true if !$testmode
   $talkdelay = 0
   $maybreak = 0
   $respect = 0
   $response = false
-  $dialogue = 18
+  $dialogue = 0
  end
  
  def draw
@@ -1832,7 +1837,7 @@ class Talks
 
    $readytotalk = true if $talkrand == $lifecounter
 
-   if (Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT) and !@pressed4 and !$conversation
+   if (Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT) and !@pressed4 and !$conversation and $dialogue > 0
     $talkdelay = $lifecounter + 200
     @pressed4 = true
    elsif not Gosu.button_down? Gosu::KB_UP and not Gosu.button_down? Gosu::KB_DOWN and not Gosu.button_down? Gosu::KB_LEFT and not Gosu.button_down? Gosu::KB_RIGHT
@@ -1844,7 +1849,7 @@ class Talks
    end
 
    if (Gosu.button_down? Gosu::KB_T or $readytotalk) and !@pressed2 and $talkdelay <= $lifecounter and $move and !$play and !$sing and $rpsls == 0 and !$feed and !$dead and !$start and not ($id == 3 and $light and $sleepy > 4) and !$dream and !$asleep and not ($id == 4 and $sad > 4 and $light) and not ($id != 3 and !$light and $sleepy > 4) and !$conversation and $maybreak == 0 and !$sleepdeprivation and $sleepstate != 4 and !$sneeze
-     $call.play unless ($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2
+     $call.play unless (($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2) or $dialogue == 0
      $light = true
      $sleepstate = nil
      $conversation = true
@@ -1909,7 +1914,8 @@ class Talks
     $negative_talk = 0
     $negative_incrementation += 1 if $id != 4 and $id != 5
     $readytotalk = false
-    $talkrand = $lifecounter + rand(550..1000)
+    $talkrand = $lifecounter + rand(550..1000) if $testmode
+    $talkrand = $lifecounter + rand(17000..22000) if !$testmode
    end
 
    if $talkstate == 1 and (Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT)
@@ -1932,7 +1938,8 @@ class Talks
     $move = true
     $negative_talk = 0
     $readytotalk = false
-    $talkrand = $lifecounter + rand(550..1000)
+    $talkrand = $lifecounter + rand(550..1000) if $testmode
+    $talkrand = $lifecounter + rand(17000..22000) if !$testmode
    end
 
    if $dead
@@ -2054,7 +2061,8 @@ class Talks
       	elsif $negative_talk == 3
   			  $endoftalk = $lifecounter + 300
           $state = 2
-      		$talk = "*sob* *sob*"
+      		$talk = "*sob* *sob*" if $id != 1
+          $talk = "I'm melting..." if $id == 1
         elsif $negative_talk == 2
           $endoftalk = $lifecounter + 300
           $state = 14 if $id == 0 or $id == 1 or $id == 2
@@ -6061,7 +6069,7 @@ class Stats
     @hearts1, @hearts2, @hearts3, @hearts4, @hearts5, @hearts11, @hearts12, @hearts13, @hearts14, @hearts15 = *Gosu::Image.load_tiles("vis/hearts.png", 39, 6)
     $sad = 1
     $hungry = 1
-    $sleepy = 4
+    $sleepy = 0
     $sick = false
   end
 
@@ -6132,7 +6140,16 @@ class Stats
 
   def update
    if !$dead and !$broken_deer
-    @maygetsick = rand(0..4) if $lifecounter % 3000 == 2999 and !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and $id != 5 and !$robotplay and !$sleepdeprivation and !$sad_deer and !$conversation and !$sick and !$dead and !$ending
+    if $sickrand == $lifecounter
+      $sickrand = $lifecounter + rand(2000..3000) if $testmode
+      $sickrand = $lifecounter + rand(10000..20000) if !$testmode
+      if !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and $id != 5 and !$robotplay and !$sleepdeprivation and !$sad_deer and !$conversation and !$sick and !$dead and !$ending
+        if $sad > 4 or $hungry > 4
+          @maygetsick = rand(0..4)
+        else @maygetsick = rand(0..8)
+        end
+      end
+    end
     if @maygetsick == 1
       $call.play unless $feed
       $maydie = $lifecounter + 1000
@@ -6141,21 +6158,37 @@ class Stats
       $sick = true
     end
     if !$sick and !$asleep
-    $sad += 1 if $lifecounter % 2500 == 1 and $id != 3 and $rpsls == 0 and !$sing and !$hug and !$conversation
+      if $testmode
+        $sad += 1 if $lifecounter % 2500 == 1 and $id != 3 and $rpsls == 0 and !$sing and !$hug and !$conversation
+      elsif !$testmode
+        $sad += 1 if $lifecounter % 18000 == 10000 and $id != 3 and $rpsls == 0 and !$sing and !$hug and !$conversation
+      end
      if $id == 3 and $light
-      $sad += 1 if $lifecounter % 2500 == 1 and $rpsls == 0 and !$sing and !$hug and !$conversation
+      if $testmode
+        $sad += 1 if $lifecounter % 2500 == 1 and $rpsls == 0 and !$sing and !$hug and !$conversation
+      elsif !$testmode
+        $sad += 1 if $lifecounter % 18000 == 10000 and $rpsls == 0 and !$sing and !$hug and !$conversation
+      end
      elsif $id == 3 and !$light and $sleepy < 5 and $hungry < 5
-      $sad -= 1 if $lifecounter % 2500 == 1 and !$conversation
+      $sad -= 1 if $lifecounter % 2500 == 2000 and !$conversation
      elsif $id == 3
-      $sad += 1 if $lifecounter % 3000 == 1 and !$conversation
+      if $testmode
+        $sad += 1 if $lifecounter % 3000 == 1 and !$conversation
+      elsif !$testmode
+        $sad += 1 if $lifecounter % 20000 == 10000 and !$conversation
+      end
      end
-    $hungry += 1 if $lifecounter % 1000 == 1 and $id != 4 and !$conversation
+    $hungry += 1 if $lifecounter % 1000 == 1 and $id != 4 and $testmode
+    $hungry += 1 if $lifecounter % 15000 == 14000 and $id != 4 and !$testmode
     if $id == 4 and $light
-      $hungry -= 1 if $lifecounter % 1000 == 1
+      $hungry -= 1 if $lifecounter % 1000 == 1 and $testmode
+      $hungry -= 1 if $lifecounter % 3500 == 3000 and !$testmode
     elsif $id == 4 and !$light
-      $hungry += 1 if $lifecounter % 1000 == 1
+      $hungry += 1 if $lifecounter % 1000 == 1 and $testmode
+      $hungry += 1 if $lifecounter % 5000 == 4500 and !$testmode
     end
-    $sleepy += 1 if $lifecounter % 4000 == 1 and $id != 4
+    $sleepy += 1 if $lifecounter % 4000 == 1 and $id != 4 and $testmode
+    $sleepy += 1 if $lifecounter % 28000 == 27500 and $id != 4 and !$testmode
     #$sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
     if $light and !$sing and !$hug and $sleepstate != 8 and !$dream and !$sleepdeprivation and $move and !$conversation and !$sneeze
      if $sleepy > 4
@@ -6186,7 +6219,8 @@ class Stats
     end
     elsif $sick and !$asleep
     $state = 6 if $move
-    $sad += 1 if $lifecounter % 1500 == 1
+    $sad += 1 if $lifecounter % 1500 == 1 if $testmode
+    $sad += 1 if $lifecounter % 12000 == 11000 if !$testmode
     $hungry += 1 if $lifecounter % 500 == 1 and $id != 4
     if $id == 4 and $light
       $hungry -= 1 if $lifecounter % 1500 == 1 and $maybreak == 0
@@ -6225,7 +6259,7 @@ class Stats
     $call.play
     $asleep = false
     if !$sick and $hungry < 6
-     $dreamwait = $lifecounter + 2000
+     $dreamwait = $lifecounter + 3000
      $dream = true
      $dreamstate = 1
     end
@@ -6241,12 +6275,16 @@ class Stats
     $dreamstate = 0
    end
 
-   if $id == 1 and $lifecounter % 500 == 499 and !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and !$sleepdeprivation and !$conversation and $sleepstate != 4 and !$feed and !$dead
-    $waitsneeze = $lifecounter + 50
-    $sneeze = true
-    $move = false
-    $state = 17
-    $sneeze_sound = true
+   if $id == 1 and $sneezerand == $lifecounter
+    $sneezerand = $lifecounter + rand(400..500) if $testmode
+    $sneezerand = $lifecounter + rand(8000..18000) if !$testmode
+    if !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and !$sleepdeprivation and !$conversation and $sleepstate != 4 and !$feed and !$dead
+      $waitsneeze = $lifecounter + 50
+      $sneeze = true
+      $move = false
+      $state = 17
+      $sneeze_sound = true
+    end
    end
 
    if $waitsneeze == $lifecounter and $sneeze
@@ -6320,7 +6358,7 @@ class Tamago < Gosu::Window
   def initialize
     super 200, 220
     self.caption = "Tamagotchi"
-    @font = Gosu::Font.new(self, "vis/pixel.ttf", 14)
+    #@font = Gosu::Font.new(self, "vis/pixel.ttf", 14)
     @background_image = Gosu::Image.new("vis/back.png", :tileable => true)
     @background_image1 = Gosu::Image.new("vis/back1.png", :tileable => true)
     @stats = Stats.new
@@ -6638,22 +6676,9 @@ class Tamago < Gosu::Window
     @icons.draw(140, 5, 1) if !$start and $light and !$ending and !$dead
     @icons1.draw(140, 5, 1) if !$start and !$light
     $player.draw if !$start and !$feed and !$play and $rpsls == 0 and !$ending
-
-    #@font.draw($talk, 10, 157, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    #@font.draw($talk1, 10, 169, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    #@font.draw($talk2, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    #@font.draw($talk3, 10, 193, 1, 1.0, 1.0, Gosu::Color::WHITE)
-    #@font.draw($talk4, 14, 182, 1, 1.8, 1.8, Gosu::Color.argb(0xff_c975ff))
-    #@font.draw($talk5, 108, 172, 1, 2.4, 2.4, Gosu::Color.argb(0xff_ffa7fa))
-    #@font.draw($talk6, 130, 182, 1, 2.5, 2.5, Gosu::Color.argb(0xff_5cffe6))
-    #@font.draw($tap, 10, 169, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
-    #@font.draw($smash_text, 10, 181, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 6 and $id == 3
-    #@font.draw($give_a_name, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
-    #@font.draw($enter_name, 10, 157, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
-    #@font.draw($name_display, 26, 178, 1, 1.0, 1.0, Gosu::Color::CYAN) if $dialogue == 16 and $id == 5
-    @font.draw($lifecounter, 10, 181, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation and !$dead
-
-    #@font.draw($talkrand, 60, 13, 1, 1.0, 1.0, Gosu::Color::BLUE)
+    
+    bitmap($lifecounter.to_s, 10, 184, 0) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation and !$dead and $testmode
+    bitmap($sneezerand.to_s, 60, 13, 0)
 
     bitmap($talk, 10, 160, 0) if $talk != nil
     bitmap($talk1, 10, 172, 0) if $talk1 != nil
@@ -6670,8 +6695,6 @@ class Tamago < Gosu::Window
     @wobot1.draw(108, 184, 1) if $id == 4 and $dialogue == 2 and ($d_number == 4 or $d_number == 5)
     @wobot2.draw(130, 195, 1) if $id == 4 and $dialogue == 2 and $d_number == 5
 
-    #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::BLACK) if $light
-    #@font.draw($state, 50, 5, 1, 1.0, 1.0, Gosu::Color::WHITE) if !$light
     @action.draw if !$ending and !$dead
 
     @letter.draw(64, 27, 1) if $ending and $id != 5 and $id != 4 and !$opened_letter
@@ -6703,18 +6726,13 @@ end
 
  #c:\prog> ocra tamago.rbw --icon icon.ico
 
- #low stats make the higher risk to get sick
- #no sick, talk, catsleep etc. when minigame
- #I feel broken/ I'm stressed/ I'm melting
  #zingo is busy at the moment (state lasts for more time)
  # dialogue != monologue :(
  # check if the $dreamwait var is long enough
  # make more talks when $feed
  # manage time and numbers for getting sick
  # make hunger stats fall very slowly when !sick and asleep
- # pets shouldn't fall asleep when conversation
  # check the conditions under which pets get sick
- # no call sound when get sick and feed
  # add return as any key
  # different songs have different delay
  # remove talk by pressing t and death by return
