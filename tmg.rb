@@ -5,7 +5,7 @@ require 'gosu'
 
 class Pet
   def initialize
-  $testmode = true
+  $testmode = false
   $start = true
   $move = true
   $light = true
@@ -1848,16 +1848,29 @@ class Talks
    	$talkdelay = $lifecounter + 200
    end
 
-   if (Gosu.button_down? Gosu::KB_T or $readytotalk) and !@pressed2 and $talkdelay <= $lifecounter and $move and !$play and !$sing and $rpsls == 0 and !$feed and !$dead and !$start and not ($id == 3 and $light and $sleepy > 4) and !$dream and !$asleep and not ($id == 4 and $sad > 4 and $light) and not ($id != 3 and !$light and $sleepy > 4) and !$conversation and $maybreak == 0 and !$sleepdeprivation and $sleepstate != 4 and !$sneeze
-     $call.play unless (($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2) or $dialogue == 0
-     $light = true
-     $sleepstate = nil
-     $conversation = true
-     $talkstate = 0
-     $d_number = 0
-     @pressed2 = true
-   elsif not Gosu.button_down? Gosu::KB_T
-      @pressed2 = nil
+   if $testmode
+     if (Gosu.button_down? Gosu::KB_T or $readytotalk) and !@pressed2 and $talkdelay <= $lifecounter and $move and !$play and !$sing and $rpsls == 0 and !$feed and !$dead and !$start and not ($id == 3 and $light and $sleepy > 4) and !$dream and !$asleep and not ($id == 4 and $sad > 4 and $light) and not ($id != 3 and !$light and $sleepy > 4) and !$conversation and $maybreak == 0 and !$sleepdeprivation and $sleepstate != 4 and !$sneeze
+       $call.play unless (($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2) or $dialogue == 0
+       $light = true
+       $sleepstate = nil
+       $conversation = true
+       $talkstate = 0
+       $d_number = 0
+       @pressed2 = true
+     elsif not Gosu.button_down? Gosu::KB_T
+        @pressed2 = nil
+     end
+   end
+
+   if !$testmode
+     if $readytotalk and $talkdelay <= $lifecounter and $move and !$play and !$sing and $rpsls == 0 and !$feed and !$dead and !$start and not ($id == 3 and $light and $sleepy > 4) and !$dream and !$asleep and not ($id == 4 and $sad > 4 and $light) and not ($id != 3 and !$light and $sleepy > 4) and !$conversation and $maybreak == 0 and !$sleepdeprivation and $sleepstate != 4 and !$sneeze
+       $call.play unless (($negativetalk_incrementation > 5 or $negative_incrementation > 5) and $id == 2) or $dialogue == 0
+       $light = true
+       $sleepstate = nil
+       $conversation = true
+       $talkstate = 0
+       $d_number = 0
+     end
    end
 
    if $conversation == true
@@ -2086,24 +2099,30 @@ class Talks
     			case $dialogue
     			when 0
             if $d_number == 0
+              $wait = $lifecounter + 50
+              $state = 15
+              $d_number = 1
+            end
+
+            if $d_number == 1 and $lifecounter == $wait
       				$wait = $lifecounter + 400
               $state = 11
       				$talk = "Hello! My name is Dogrose."
       				$talk1 = "But I’m sure I’m a dog if you"
       				$talk2 = "wonder."
-              $d_number = 1
+              $d_number = 2
             end
 
-    				if $d_number == 1 and $lifecounter == $wait
+    				if $d_number == 2 and $lifecounter == $wait
     					$wait = $lifecounter + 350
               $state = 11
 	    				$talk = "You don’t have to be always near."
 	    				$talk1 = "I bet you are very busy."
 	    				$talk2 = nil
-	    				$d_number = 2
+	    				$d_number = 3
 	    			end
 
-	    			if $d_number == 2 and $lifecounter == $wait
+	    			if $d_number == 3 and $lifecounter == $wait
     					$endoftalk = $lifecounter + 400
               $state = 13
 	    				$talk = "Please just do your thing."
@@ -2830,32 +2849,38 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
+              $wait = $lifecounter + 50
+              $state = 15
+              $d_number = 1
+            end
+
+            if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 500
               $state = 11
               $talk = "Greetings! I'm Ninja! "
               $talk1 = "I will be here for a  while,"
               $talk2 = "hope you're ok  with that."
-              $d_number = 1
-            end
-
-            if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 400
-              $state = 10
-              $talk = "No need to look  after me, really!"
-              $talk1 = "Just  give me foods plz."
-              $talk2 = nil
               $d_number = 2
             end
 
             if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 400
-              $state = 13
-              $talk = "I will call you in  case of"
-              $talk1 = "something  urrrgent, alrrright?"
+              $state = 10
+              $talk = "No need to look  after me, really!"
+              $talk1 = "Just  give me foods plz."
+              $talk2 = nil
               $d_number = 3
             end
 
             if $d_number == 3 and $lifecounter == $wait
+              $wait = $lifecounter + 400
+              $state = 13
+              $talk = "I will call you in  case of"
+              $talk1 = "something  urrrgent, alrrright?"
+              $d_number = 4
+            end
+
+            if $d_number == 4 and $lifecounter == $wait
               $endoftalk = $lifecounter + 200
               $state = 11
               $talk = "Do your stuff."
@@ -2921,7 +2946,7 @@ class Talks
                 Gosu.button_down? Gosu::KB_APOSTROPHE or Gosu.button_down? Gosu::KB_BACKSLASH or Gosu.button_down? Gosu::KB_BACKSPACE or Gosu.button_down? Gosu::KB_BACKTICK or Gosu.button_down? Gosu::KB_COMMA or
                 Gosu.button_down? Gosu::KB_DELETE or Gosu.button_down? Gosu::KB_END or Gosu.button_down? Gosu::KB_ENTER or Gosu.button_down? Gosu::KB_EQUALS or Gosu.button_down? Gosu::KB_HOME or 
                 Gosu.button_down? Gosu::KB_LEFT_SHIFT or Gosu.button_down? Gosu::KB_MINUS or Gosu.button_down? Gosu::KB_RIGHT_SHIFT or Gosu.button_down? Gosu::KB_SLASH or Gosu.button_down? Gosu::KB_SPACE or 
-                Gosu.button_down? Gosu::KB_TAB or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_UP
+                Gosu.button_down? Gosu::KB_TAB or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_RETURN
                 $wait = $lifecounter + 200
                 $state = 12
                 $talk = "Cooooooool!"
@@ -3646,38 +3671,43 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
-              $wait = $lifecounter + 260
+              $wait = $lifecounter + 50
               $state = 15
-              $talk = "Do you mind my  company,"
-              $talk1 = "earthling?"
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
-              $wait = $lifecounter + 500
-              $state = 13
-              $talk = "I'm from Ísdalur.  It's far away"
-              $talk1 = "from here,  in another planetary"
-              $talk2 = "system."
+              $wait = $lifecounter + 260
+              $state = 15
+              $talk = "Do you mind my  company,"
+              $talk1 = "earthling?"
               $d_number = 2
             end
 
             if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 500
-              $state = 14
-              $talk = "It's alright if you  are busy."
-              $talk1 = "You don't  have to pay me much "
-              $talk2 = "attention."
+              $state = 13
+              $talk = "I'm from Ísdalur.  It's far away"
+              $talk1 = "from here,  in another planetary"
+              $talk2 = "system."
               $d_number = 3
             end
 
             if $d_number == 3 and $lifecounter == $wait
+              $wait = $lifecounter + 500
+              $state = 14
+              $talk = "It's alright if you  are busy."
+              $talk1 = "You don't  have to pay me much "
+              $talk2 = "attention."
+              $d_number = 4
+            end
+
+            if $d_number == 4 and $lifecounter == $wait
               $endoftalk = $lifecounter + 500
               $state = 14
               $talk = "I will just stay here  for a while."
               $talk1 = "But please hear me  if I call you."
               $talk2 = nil
-              $d_number = 4
             end
           when 1
             if $d_number == 0
@@ -4352,29 +4382,34 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
-              $wait = $lifecounter + 300
-              $state = 12
-              $talk = "Hello, Senpai!  It’s pleasure to"
-              $talk1 = "meet you!"
+              $wait = $lifecounter + 50
+              $state = 15
               $d_number = 1
             end
 
             if $d_number == 1 and $lifecounter == $wait
+              $wait = $lifecounter + 300
+              $state = 12
+              $talk = "Hello, Senpai!  It’s pleasure to"
+              $talk1 = "meet you!"
+              $d_number = 2
+            end
+
+            if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 450
               $state = 11
               $talk = "May I stay with you for a while? "
               $talk1 = "I promise I’ll try not to bother"
               $talk2 = "you  much."
-              $d_number = 2
+              $d_number = 3
             end
 
-            if $d_number == 2 and $lifecounter == $wait
+            if $d_number == 3 and $lifecounter == $wait
               $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "But, please, don’t leave me  for"
               $talk1 = "long..."
               $talk2 = nil
-              $d_number = 3
             end
           when 1
             if $d_number == 0
@@ -5197,11 +5232,16 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
+              $wait = $lifecounter + 50
+              $state = 15
+              $d_number = 1
+            end
+
+            if $d_number == 1 and $lifecounter == $wait
               $endoftalk = $lifecounter + 300
               $state = 11
               $talk = "Hello..."
               $talk1 = "I’m so sorry I’m here..."
-              $d_number = 1
             end
           when 1
             if $d_number == 0
@@ -5607,24 +5647,30 @@ class Talks
           case $dialogue
           when 0
             if $d_number == 0
+              $wait = $lifecounter + 50
+              $state = 15
+              $d_number = 1
+            end
+
+            if $d_number == 1 and $lifecounter == $wait
               $wait = $lifecounter + 450
               $state = 16
               $talk = "Hello! It’s nice to meet you. "
               $talk1 = "I’m Z1ng0 ver. 3.0."
               $talk2 = "I’m a beta version."
-              $d_number = 1
+              $d_number = 2
             end
 
-            if $d_number == 1 and $lifecounter == $wait
+            if $d_number == 2 and $lifecounter == $wait
               $wait = $lifecounter + 400
               $state = 16
               $talk = "Please press 'R' to reboot me "
               $talk1 = "in case I freeze."
               $talk2 = nil
-              $d_number = 2
+              $d_number = 3
             end
 
-            if $d_number == 2 and $lifecounter == $wait
+            if $d_number == 3 and $lifecounter == $wait
               $endoftalk = $lifecounter + 400
               $state = 16
               $talk = "It happens sometimes, but  else"
@@ -6219,29 +6265,40 @@ class Stats
     end
     elsif $sick and !$asleep
     $state = 6 if $move
-    $sad += 1 if $lifecounter % 1500 == 1 if $testmode
-    $sad += 1 if $lifecounter % 12000 == 11000 if !$testmode
-    $hungry += 1 if $lifecounter % 500 == 1 and $id != 4
+    $sad += 1 if $lifecounter % 1500 == 1 and $testmode
+    $sad += 1 if $lifecounter % 12000 == 11000 and !$testmode
+    $hungry += 1 if $lifecounter % 500 == 1 and $id != 4 and $testmode
+    $hungry += 1 if $lifecounter % 10500 == 10445 and $id != 4 and !$testmode
     if $id == 4 and $light
-      $hungry -= 1 if $lifecounter % 1500 == 1 and $maybreak == 0
+      $hungry -= 1 if $lifecounter % 1500 == 1 and $maybreak == 0 and $testmode
+      $hungry -= 1 if $lifecounter % 4000 == 3850 and $maybreak == 0 and !$testmode
     elsif $id == 4 and !$light
-      $hungry += 1 if $lifecounter % 500 == 1
+      $hungry += 1 if $lifecounter % 500 == 1 and $testmode
+      $hungry += 1 if $lifecounter % 4500 == 4255 and !$testmode
     end
-    $sleepy += 1 if $lifecounter % 3500 == 1 and $id != 4
+    $sleepy += 1 if $lifecounter % 3500 == 1 and $id != 4 and $testmode
+    $sleepy += 1 if $lifecounter % 25000 == 24360 and $id != 4 and !$testmode
     #$sleepy += 1 if $lifecounter % 200 == 1 and $id != 4
     elsif $sick and $asleep
     $state = 5
-    $sad += 1 if $lifecounter % 2000 == 1
-    $hungry += 1 if $lifecounter % 4500 == 1
-    $sleepy -= 1 if $lifecounter % 3000 == 2000 and $id != 4
+    $sad += 1 if $lifecounter % 2000 == 1 and $testmode
+    $sad += 1 if $lifecounter % 10000 == 9999 and !$testmode
+    $hungry += 1 if $lifecounter % 4500 == 1 and $testmode
+    $hungry += 1 if $lifecounter % 18000 == 17950 and !$testmode
+    $sleepy -= 1 if $lifecounter % 3000 == 2000 and $id != 4 and $testmode
+    $sleepy -= 1 if $lifecounter % 20000 == 19600 and $id != 4 and !$testmode
     #$sleepy -= 1 if $lifecounter % 200 == 1 and $id != 4
     elsif !$sick and $asleep
     $state = 5
-    $sad -= 1 if $lifecounter % 500 == 1 and $id == 4
-    $hungry += 1 if $lifecounter % 5000 == 1 and $id != 4
-    $hungry -= 1 if $lifecounter % 1500 == 1 and $id == 4
-    #$sleepy -= 1 if $lifecounter % 2000 == 1999 and $id != 4
-    $sleepy -= 1 if $lifecounter % 20 == 1 and $id != 4
+    $sad -= 1 if $lifecounter % 500 == 1 and $id == 4 and $testmode
+    $sad -= 1 if $lifecounter % 7000 == 6999 and $id == 4 and !$testmode
+    $hungry += 1 if $lifecounter % 5000 == 1 and $id != 4 and $testmode
+    $hungry += 1 if $lifecounter % 25000 == 24555 and $id != 4 and !$testmode
+    $hungry -= 1 if $lifecounter % 1500 == 1 and $id == 4 and $testmode
+    $hungry -= 1 if $lifecounter % 3500 == 3400 and $id == 4 and !$testmode
+    $sleepy -= 1 if $lifecounter % 2000 == 1999 and $id != 4 and $testmode
+    $sleepy -= 1 if $lifecounter % 10000 == 9999 and $id != 4 and !$testmode
+    #$sleepy -= 1 if $lifecounter % 20 == 1 and $id != 4
    end
    end
 
@@ -6301,7 +6358,7 @@ class Stats
    $hungry = 5 if $hungry > 5 and $id == 4 and $light and $maybreak == 0
    $hungry = 0 if $hungry < 0 and $id == 4 and !$light
    $sleepy = 5 if $sleepy > 4
-   if !$conversation and !$ending and !$sneeze and $maydie < $lifecounter and (($hungry > 8 and $id != 5 and $id != 4 and $sick) or $dead_deer or Gosu.button_down? Gosu::KB_RETURN)
+   if !$conversation and !$ending and !$sneeze and $maydie < $lifecounter and (($hungry > 8 and $id != 5 and $id != 4 and $sick) or $dead_deer)
     death
    end
 
@@ -6357,7 +6414,7 @@ end
 class Tamago < Gosu::Window
   def initialize
     super 200, 220
-    self.caption = "Tamagotchi"
+    self.caption = "Tamagosu"
     #@font = Gosu::Font.new(self, "vis/pixel.ttf", 14)
     @background_image = Gosu::Image.new("vis/back.png", :tileable => true)
     @background_image1 = Gosu::Image.new("vis/back1.png", :tileable => true)
@@ -6678,7 +6735,7 @@ class Tamago < Gosu::Window
     $player.draw if !$start and !$feed and !$play and $rpsls == 0 and !$ending
     
     bitmap($lifecounter.to_s, 10, 184, 0) if !$feed and !$dream and $rpsls == 0 and $light and !$conversation and !$dead and $testmode
-    bitmap($sneezerand.to_s, 60, 13, 0)
+    bitmap($sneezerand.to_s, 60, 13, 0) if $testmode
 
     bitmap($talk, 10, 160, 0) if $talk != nil
     bitmap($talk1, 10, 172, 0) if $talk1 != nil
@@ -6726,13 +6783,6 @@ end
 
  #c:\prog> ocra tamago.rbw --icon icon.ico
 
- #zingo is busy at the moment (state lasts for more time)
  # dialogue != monologue :(
- # check if the $dreamwait var is long enough
  # make more talks when $feed
- # manage time and numbers for getting sick
- # make hunger stats fall very slowly when !sick and asleep
- # check the conditions under which pets get sick
- # add return as any key
  # different songs have different delay
- # remove talk by pressing t and death by return
