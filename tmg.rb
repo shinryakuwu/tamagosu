@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'gosu'
 
 #do͘n̕'̶t ̸y̴ou ̶da̸r̨e to͝ ̡u͝n̕der̢s͢ta̷n͟d͡ w̕h̛a͟t̡'͢ś ̷g̴o͠i̶ng͘ on he͡r͟e, d̨on̷'͢t ̶yo͏u ҉ev͘en ͘da͜r͜e̡
@@ -713,14 +712,16 @@ class Action
     @decide = Gosu::Sample.new("vis/decide.wav")
     @cannot = Gosu::Sample.new("vis/can't.wav")
     @sneeze = Gosu::Sample.new("vis/sneeze.wav")
+    @eat = Gosu::Sample.new("vis/eat.wav")
     $call = Gosu::Sample.new("vis/call.wav")
     @tune0 = Gosu::Song.new("vis/nintendocore.wav")
+    @tune1 = Gosu::Song.new("vis/song_midi.wav")
     @cursor = 4
   end
 
   def tunerand
     @tune_rand = 1
-    @tune = @tune0 if @tune_rand == 1
+    @tune = @tune1 if @tune_rand == 1
   end
   
   def draw
@@ -1102,8 +1103,8 @@ class Action
     end
     $hungry -= $food
     $hungry = 4 if $hungry > 4 and $food > 0
-    @decide.play if $food > 0
-    @cannot.play if $food == 0
+    @eat.play if $food > 0 and not ($hungry < -1 and $food > 0)
+    @cannot.play if $food == 0 or ($hungry < -1 and $food > 0)
     @pressed = true
    elsif not Gosu.button_down? Gosu::KB_RIGHT and not Gosu.button_down? Gosu::KB_DOWN and not Gosu.button_down? Gosu::KB_LEFT
    @pressed = nil
@@ -1928,7 +1929,7 @@ class Talks
     $negative_incrementation += 1 if $id != 4 and $id != 5
     $readytotalk = false
     $talkrand = $lifecounter + rand(550..1000) if $testmode
-    $talkrand = $lifecounter + rand(17000..22000) if !$testmode
+    $talkrand = $lifecounter + rand(12000..18000) if !$testmode
    end
 
    if $talkstate == 1 and (Gosu.button_down? Gosu::KB_UP or Gosu.button_down? Gosu::KB_DOWN or Gosu.button_down? Gosu::KB_LEFT or Gosu.button_down? Gosu::KB_RIGHT)
@@ -1952,7 +1953,7 @@ class Talks
     $negative_talk = 0
     $readytotalk = false
     $talkrand = $lifecounter + rand(550..1000) if $testmode
-    $talkrand = $lifecounter + rand(17000..22000) if !$testmode
+    $talkrand = $lifecounter + rand(12000..18000) if !$testmode
    end
 
    if $dead
@@ -3685,7 +3686,7 @@ class Talks
             end
 
             if $d_number == 2 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 400
               $state = 13
               $talk = "I'm from Ísdalur.  It's far away"
               $talk1 = "from here,  in another planetary"
@@ -3694,7 +3695,7 @@ class Talks
             end
 
             if $d_number == 3 and $lifecounter == $wait
-              $wait = $lifecounter + 500
+              $wait = $lifecounter + 400
               $state = 14
               $talk = "It's alright if you  are busy."
               $talk1 = "You don't  have to pay me much "
@@ -3703,7 +3704,7 @@ class Talks
             end
 
             if $d_number == 4 and $lifecounter == $wait
-              $endoftalk = $lifecounter + 500
+              $endoftalk = $lifecounter + 400
               $state = 14
               $talk = "I will just stay here  for a while."
               $talk1 = "But please hear me  if I call you."
@@ -6113,8 +6114,8 @@ class Stats
   def initialize
     @image, @image1, @image2, @image3 = *Gosu::Image.load_tiles("vis/stats.png", 5, 22)
     @hearts1, @hearts2, @hearts3, @hearts4, @hearts5, @hearts11, @hearts12, @hearts13, @hearts14, @hearts15 = *Gosu::Image.load_tiles("vis/hearts.png", 39, 6)
-    $sad = 1
-    $hungry = 1
+    $sad = 2
+    $hungry = 2
     $sleepy = 0
     $sick = false
   end
@@ -6334,7 +6335,7 @@ class Stats
 
    if $id == 1 and $sneezerand == $lifecounter
     $sneezerand = $lifecounter + rand(400..500) if $testmode
-    $sneezerand = $lifecounter + rand(8000..18000) if !$testmode
+    $sneezerand = $lifecounter + rand(18000..26000) if !$testmode
     if !$asleep and !$play and !$sing and !$hug and !$dream and $move and $rpsls == 0 and !$sleepdeprivation and !$conversation and $sleepstate != 4 and !$feed and !$dead
       $waitsneeze = $lifecounter + 50
       $sneeze = true
@@ -6782,7 +6783,7 @@ end
  Tamago.new.show
 
  #c:\prog> ocra tamago.rbw --icon icon.ico
+ #c:\prog> ocra --chdir-first --output Tamagosu.exe tmg.rbw vis --icon icon.ico
 
  # dialogue != monologue :(
- # make more talks when $feed
  # different songs have different delay
