@@ -6809,4 +6809,3 @@ end
  #c:\prog> ocra --chdir-first --output Tamagosu.exe tmg.rbw vis --icon icon.ico
 
  # dialogue != monologue :(
- # different songs have different delay
