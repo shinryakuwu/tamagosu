@@ -1,5 +1,4 @@
 # tamagosu
-the world of bugs
 
 This is the first videogame code I ever created.
 It may seem like Ruby, but it's actually my own language - the language of pain.
